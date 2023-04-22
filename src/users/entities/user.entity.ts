@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserImage } from "./user-images.entity";
 
 @Entity()
 export class User {
@@ -16,7 +17,19 @@ export class User {
     })
     description: string;
 
-    @Column('timestamp')
+    @Column('date')
     createdTime: Date
+
+    @OneToMany(
+        () => UserImage,
+        userImage => userImage.user,
+        { cascade: true, eager: true }
+    )
+    images?: UserImage[]
+
+    @BeforeInsert()
+    createDate() {
+        this.createdTime = new Date
+    }
 
 }
