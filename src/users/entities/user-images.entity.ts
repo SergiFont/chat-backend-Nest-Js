@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 
-@Entity()
+@Entity({name: 'user_images'})
 export class UserImage {
 
     @PrimaryGeneratedColumn()

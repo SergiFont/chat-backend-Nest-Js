@@ -1,7 +1,7 @@
 import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity()
+@Entity({ name: 'rooms' })
 export class Room {
 
     @PrimaryGeneratedColumn('uuid')
