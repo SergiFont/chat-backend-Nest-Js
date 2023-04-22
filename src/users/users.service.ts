@@ -83,11 +83,26 @@ export class UsersService {
     return 'User deleted'
   }
 
-  private handleDbExceptions ( error: any ) {
+  private handleDbExceptions ( error: { code: string; detail: any; } ) {
     if ( error.code === '23505' )
         throw new BadRequestException( error.detail )
 
       this.logger.error(error)
       throw new InternalServerErrorException('Unexpected error, check server logs')
-  } 
+  }
+
+  async deleteAllUsers() {
+    const query = this.userRepository.createQueryBuilder('user')
+
+    try {
+      return await query
+        .delete()
+        .where({})
+        .execute()
+
+    } catch (error) {
+      this.handleDbExceptions(error)
+    }
+  }
+
 }

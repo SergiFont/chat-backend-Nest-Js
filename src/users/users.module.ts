@@ -11,6 +11,7 @@ import { UserImage } from './entities/user-images.entity';
   providers: [UsersService],
   imports: [
     TypeOrmModule.forFeature([User, UserImage])
-  ]
+  ],
+  exports: [UsersService, TypeOrmModule]
 })
 export class UsersModule {}

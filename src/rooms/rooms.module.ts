@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [RoomsService],
   imports: [
     TypeOrmModule.forFeature([Room]) // importa el modelo TypeOrm y la aplica al Producto
-  ]
+  ],
+  exports: [RoomsService, TypeOrmModule]
 })
 export class RoomsModule {}

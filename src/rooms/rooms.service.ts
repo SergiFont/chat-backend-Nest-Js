@@ -77,15 +77,32 @@ export class RoomsService {
 
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} room`;
+  async remove(id: string) {
+    await this.findOne(id)
+    await this.roomRepository.delete(id)
+    return 'Room deleted'
   }
 
-  private handleDbExceptions ( error: any ) {
+  private handleDbExceptions ( error: { code: string; detail: any; } ) {
     if ( error.code === '23505' )
         throw new InternalServerErrorException( error.detail )
 
       this.logger.error(error)
       throw new InternalServerErrorException('Unexpected error, check server logs')
   } 
+
+  async deleteAllRooms() {
+    const query = this.roomRepository.createQueryBuilder('rooms')
+
+    try {
+      return await query
+        .delete()
+        .where({})
+        .execute()
+
+    } catch (error) {
+      this.handleDbExceptions(error)
+    }
+  }
+
 }

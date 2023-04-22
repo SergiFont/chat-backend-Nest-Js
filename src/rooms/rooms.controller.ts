@@ -24,14 +24,15 @@ export class RoomsController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, 
-  @Body() updateRoomDto: UpdateRoomDto
+  update(
+    @Param('id', ParseUUIDPipe) id: string, 
+    @Body() updateRoomDto: UpdateRoomDto
   ) {
     return this.roomsService.update(id, updateRoomDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.roomsService.remove(+id);
+    return this.roomsService.remove(id);
   }
 }
