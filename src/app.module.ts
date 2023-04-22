@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { SeedModule } from './seed/seed.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SeedModule } from './seed/seed.module';
     CommonModule,
     RoomsModule,
     SeedModule,
+    FilesModule,
   ],
   
 })
