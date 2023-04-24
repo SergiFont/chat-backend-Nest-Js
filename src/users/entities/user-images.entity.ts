@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.entity";
+import { FakeUser } from "./user.entity";
 
 
 @Entity({name: 'user_images'})
@@ -13,10 +13,10 @@ export class UserImage {
 
 
     @ManyToOne(
-        () => User,
+        () => FakeUser,
         user => user.images,
         { onDelete: 'CASCADE'}
     )
-    user: User
+    user: FakeUser
 
 }

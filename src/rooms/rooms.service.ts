@@ -6,6 +6,7 @@ import { Room } from './entities/room.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { validate as isUUID} from 'uuid'
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class RoomsService {
@@ -15,6 +16,7 @@ export class RoomsService {
   constructor(
     @InjectRepository(Room)
     private readonly roomRepository: Repository<Room>,
+    private readonly commonService: CommonService
   ) {}
 
   async create(createRoomDto: CreateRoomDto) {
@@ -26,7 +28,7 @@ export class RoomsService {
       return room;
       
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
   }
 
@@ -72,7 +74,7 @@ export class RoomsService {
       return room;
       
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
 
   }
@@ -82,14 +84,6 @@ export class RoomsService {
     await this.roomRepository.delete(id)
     return 'Room deleted'
   }
-
-  private handleDbExceptions ( error: { code: string; detail: any; } ) {
-    if ( error.code === '23505' )
-        throw new InternalServerErrorException( error.detail )
-
-      this.logger.error(error)
-      throw new InternalServerErrorException('Unexpected error, check server logs')
-  } 
 
   async deleteAllRooms() {
     const query = this.roomRepository.createQueryBuilder('rooms')
@@ -101,7 +95,7 @@ export class RoomsService {
         .execute()
 
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
   }
 

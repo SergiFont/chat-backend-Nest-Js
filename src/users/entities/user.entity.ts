@@ -1,8 +1,8 @@
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserImage } from "./user-images.entity";
 
-@Entity({ name: 'users' })
-export class User {
+@Entity({ name: 'fakeusers' })
+export class FakeUser {
 
     @PrimaryGeneratedColumn('uuid')
     id: string;

@@ -3,9 +3,10 @@ import { BadRequestException, Controller, Get, Param, Post, Res, UploadedFile, U
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 
+import { Response } from 'express';
+
 import { FilesService } from './files.service';
 import { fileFilter, fileNamer } from './helpers';
-import { Response } from 'express';
 
 @Controller('files')
 export class FilesController {
@@ -34,7 +35,7 @@ export class FilesController {
     })
   }) )
 
-  uploadUserImage(
+  async uploadUserImage(
     @UploadedFile() file: Express.Multer.File,
   ){
 

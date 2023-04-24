@@ -2,10 +2,11 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
 import { validate as isUUID} from 'uuid'
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { FakeUser } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserImage } from './entities/user-images.entity';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class UsersService {
@@ -13,11 +14,15 @@ export class UsersService {
   private readonly logger = new Logger('UsersService')
 
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+
+    @InjectRepository(FakeUser)
+    private readonly userRepository: Repository<FakeUser>,
 
     @InjectRepository(UserImage) // insercion de la entidad Product
     private readonly userImageRepository: Repository<UserImage>,
+
+    private readonly commonService: CommonService
+
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -33,7 +38,7 @@ export class UsersService {
       return {...user, images};
       
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
   }
 
@@ -42,7 +47,7 @@ export class UsersService {
   }
 
   async findOne(term: string) {
-    let user: User;
+    let user: FakeUser;
 
     if ( isUUID(term) ) user = await this.userRepository.findOneBy({ id: term })
     else {
@@ -73,7 +78,7 @@ export class UsersService {
       return user;
       
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
   }
 
@@ -81,14 +86,6 @@ export class UsersService {
     await this.findOne( id )
     await this.userRepository.delete(id)
     return 'User deleted'
-  }
-
-  private handleDbExceptions ( error: { code: string; detail: any; } ) {
-    if ( error.code === '23505' )
-        throw new BadRequestException( error.detail )
-
-      this.logger.error(error)
-      throw new InternalServerErrorException('Unexpected error, check server logs')
   }
 
   async deleteAllUsers() {
@@ -101,7 +98,7 @@ export class UsersService {
         .execute()
 
     } catch (error) {
-      this.handleDbExceptions(error)
+      this.commonService.handleDbExceptions(error)
     }
   }
 
