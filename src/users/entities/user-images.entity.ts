@@ -1,22 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { FakeUser } from "./user.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { FakeUser } from './user.entity';
 
-
-@Entity({name: 'user_images'})
+@Entity({ name: 'user_images' })
 export class UserImage {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column('text')
+  url: string;
 
-    @Column('text')
-    url: string;
-
-
-    @ManyToOne(
-        () => FakeUser,
-        user => user.images,
-        { onDelete: 'CASCADE'}
-    )
-    user: FakeUser
-
+  @ManyToOne(() => FakeUser, (user) => user.images, { onDelete: 'CASCADE' })
+  user: FakeUser;
 }

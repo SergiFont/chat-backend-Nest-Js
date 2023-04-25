@@ -5,18 +5,16 @@ import { FakeUser } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { UserImage } from './entities/user-images.entity';
-import { CommonModule } from 'src/common/common.module';
+import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
+import { Room } from 'src/rooms/entities/room.entity';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    TypeOrmModule.forFeature([FakeUser, UserImage]),
-    CommonModule
+    TypeOrmModule.forFeature([FakeUser, UserImage, Room]), 
+    ExceptionHandlerModule
   ],
-  exports: [
-    UsersService,
-    TypeOrmModule
-    ]
+  exports: [UsersService, TypeOrmModule],
 })
 export class UsersModule {}

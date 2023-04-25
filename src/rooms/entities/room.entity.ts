@@ -1,55 +1,56 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'rooms' })
 export class Room {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @Column('text', {
+    unique: true,
+  })
+  name: string;
 
-    @Column('text', {
-        unique: true
-    })
-    name: string;
+  @Column('text', {
+    nullable: true,
+  })
+  description: string;
 
-    @Column('text', {
-        nullable: true
-    })
-    description: string;
+  @Column('text', {
+    unique: true,
+  })
+  slug: string;
 
-    @Column('text', {
-        unique: true
-    })
-    slug: string;
+  @Column('timestamp')
+  createdTime: Date;
 
-    @Column('timestamp')
-    createdTime: Date
-
-    
-    
-    @BeforeInsert()
-    checkSlugInsert() {
-        if ( !this.slug ) {
-            this.slug = this.name
-        }
-
-        this.slug = this.slug
-          .toLowerCase()
-          .replaceAll(' ','_')
-          .replaceAll("'",'')
+  @BeforeInsert()
+  checkSlugInsert() {
+    if (!this.slug) {
+      this.slug = this.name;
     }
 
-    @BeforeInsert()
-    createDate() {
-        this.createdTime = new Date
-    }
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 
-    @BeforeUpdate()
-    checkSlugUpdate() {
-        this.slug = this.slug
-            .toLowerCase()
-            .replaceAll(' ', '_')
-            .replaceAll("'", '')
-    }
+  @BeforeInsert()
+  createDate() {
+    this.createdTime = new Date();
+  }
 
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }

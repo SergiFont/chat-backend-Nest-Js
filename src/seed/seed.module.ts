@@ -7,6 +7,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   controllers: [SeedController],
   providers: [SeedService],
-  imports: [RoomsModule, UsersModule]
+  imports: [RoomsModule, UsersModule],
 })
 export class SeedModule {}

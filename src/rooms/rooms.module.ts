@@ -4,17 +4,17 @@ import { RoomsController } from './rooms.controller';
 import { Room } from './entities/room.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommonModule } from 'src/common/common.module';
+import { FilesModule } from 'src/files/files.module';
+import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
+import { User } from 'src/auth/entities/user.entity';
 
 @Module({
   controllers: [RoomsController],
   providers: [RoomsService],
   imports: [
-    TypeOrmModule.forFeature([Room]), // importa el modelo TypeOrm y la aplica al Producto
-    CommonModule,
+    TypeOrmModule.forFeature([Room, User]), // importa el modelo TypeOrm y la aplica al Producto
+    ExceptionHandlerModule
   ],
-  exports: [
-    RoomsService, 
-    TypeOrmModule
-  ]
+  exports: [RoomsService, TypeOrmModule],
 })
 export class RoomsModule {}

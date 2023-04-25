@@ -9,7 +9,7 @@ describe('FilesController', () => {
   let filesController: FilesController;
   let filesService: FilesService;
   let configService: ConfigService;
-  let commonService: CommonService
+  let commonService: CommonService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,7 +28,7 @@ describe('FilesController', () => {
       const res = { sendFile: jest.fn() };
       const imageName = 'test.png';
       const path = '/path/to/image';
-      jest.spyOn(filesService, 'getFile').mockReturnValue(path);
+      jest.spyOn(filesService, 'getStaticFile').mockReturnValue(path);
 
       filesController.findProductImage(res as any, imageName);
 

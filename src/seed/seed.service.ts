@@ -5,38 +5,36 @@ import { initialRooms, initialUsers } from './data/seed-data';
 
 @Injectable()
 export class SeedService {
-  
-  constructor (
+  constructor(
     private readonly usersService: UsersService,
-    private readonly roomsService: RoomsService
+    private readonly roomsService: RoomsService,
   ) {}
 
   async runSeed() {
-    await this.insertNewData()
+    await this.insertNewData();
 
-    return 'Seed Executed'
+    return 'Seed Executed';
   }
 
   private async insertNewData() {
-    await this.roomsService.deleteAllRooms()
-    await this.usersService.deleteAllUsers()
+    await this.roomsService.deleteAllRooms();
+    await this.usersService.deleteAllUsers();
 
-    const rooms = initialRooms.rooms
-    const users = initialUsers.users
+    const rooms = initialRooms.rooms;
+    const users = initialUsers.users;
 
-    const insertPromises = []
+    const insertPromises = [];
 
-    rooms.forEach( room => {
-      insertPromises.push( this.roomsService.create( room ))
-    })
+    rooms.forEach((room) => {
+      insertPromises.push(this.roomsService.create(room));
+    });
 
-    users.forEach( user => {
-      insertPromises.push( this.usersService.create( user ))
-    })
+    users.forEach((user) => {
+      insertPromises.push(this.usersService.create(user));
+    });
 
-    await Promise.all( insertPromises )
+    await Promise.all(insertPromises);
 
-    return true
+    return true;
   }
-
 }

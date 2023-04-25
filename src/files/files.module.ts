@@ -8,9 +8,7 @@ import { CommonModule } from 'src/common/common.module';
 @Module({
   controllers: [FilesController],
   providers: [FilesService],
-  imports: [
-    CommonModule,
-    ConfigModule
-  ]
+  imports: [CommonModule, ConfigModule],
+  exports: [FilesModule]
 })
 export class FilesModule {}

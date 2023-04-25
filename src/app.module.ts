@@ -7,6 +7,7 @@ import { RoomsModule } from './rooms/rooms.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
+import { ExceptionHandlerModule } from './exception-handler/exception-handler.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { AuthModule } from './auth/auth.module';
     SeedModule,
     FilesModule,
     AuthModule,
+    ExceptionHandlerModule,
   ],
-  
 })
 export class AppModule {}

@@ -1,55 +1,56 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
-import { validate as isUUID} from 'uuid'
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { validate as isUUID } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FakeUser } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserImage } from './entities/user-images.entity';
-import { CommonService } from 'src/common/common.service';
+import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
 
 @Injectable()
 export class UsersService {
 
-  private readonly logger = new Logger('UsersService')
-
   constructor(
-
     @InjectRepository(FakeUser)
     private readonly userRepository: Repository<FakeUser>,
 
     @InjectRepository(UserImage) // insercion de la entidad Product
     private readonly userImageRepository: Repository<UserImage>,
 
-    private readonly commonService: CommonService
-
+    private readonly exceptionHandlerService: ExceptionHandlerService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { images  = [], ...userDetails } = createUserDto
+      const { images = [], ...userDetails } = createUserDto;
 
       const user = this.userRepository.create({
         ...userDetails,
-        images: images.map( image => this.userImageRepository.create({ url: image }))
+        images: images.map((image) =>
+          this.userImageRepository.create({ url: image }),
+        ),
       }); // crea instancia del usero
-      await this.userRepository.save( user ) // graba la instancia en la base de datos
+      await this.userRepository.save(user); // graba la instancia en la base de datos
 
-      return {...user, images};
-      
+      return { ...user, images };
     } catch (error) {
-      this.commonService.handleDbExceptions(error)
+      this.exceptionHandlerService.handleDbExceptions(error);
     }
   }
 
   async findAll() {
-    return await this.userRepository.find()
+    return await this.userRepository.find();
   }
 
   async findOne(term: string) {
     let user: FakeUser;
 
-    if ( isUUID(term) ) user = await this.userRepository.findOneBy({ id: term })
+    if (isUUID(term)) user = await this.userRepository.findOneBy({ id: term });
     else {
       const queryBuilder = this.userRepository.createQueryBuilder('prod');
       user = await queryBuilder
@@ -57,10 +58,11 @@ export class UsersService {
           username: term.toUpperCase(),
         })
         .leftJoinAndSelect('prod.images', 'prodImages')
-        .getOne()
-    }  
+        .getOne();
+    }
 
-    if ( !user ) throw new NotFoundException(`User with term "${term}" not found`)
+    if (!user)
+      throw new NotFoundException(`User with term "${term}" not found`);
     return user;
   }
 
@@ -68,38 +70,32 @@ export class UsersService {
     const user = await this.userRepository.preload({
       id,
       ...updateUserDto,
-      images: []
-    })
+      images: [],
+    });
 
-    if ( !user ) throw new NotFoundException(`User with id: ${id} not found`)
+    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
 
     try {
-      await this.userRepository.save(user)
+      await this.userRepository.save(user);
       return user;
-      
     } catch (error) {
-      this.commonService.handleDbExceptions(error)
+      this.exceptionHandlerService.handleDbExceptions(error);
     }
   }
 
   async remove(id: string) {
-    await this.findOne( id )
-    await this.userRepository.delete(id)
-    return 'User deleted'
+    await this.findOne(id);
+    await this.userRepository.delete(id);
+    return 'User deleted';
   }
 
   async deleteAllUsers() {
-    const query = this.userRepository.createQueryBuilder('user')
+    const query = this.userRepository.createQueryBuilder('user');
 
     try {
-      return await query
-        .delete()
-        .where({})
-        .execute()
-
+      return await query.delete().where({}).execute();
     } catch (error) {
-      this.commonService.handleDbExceptions(error)
+      this.exceptionHandlerService.handleDbExceptions(error);
     }
   }
-
 }
