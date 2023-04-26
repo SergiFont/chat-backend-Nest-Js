@@ -7,13 +7,15 @@ import { UsersController } from './users.controller';
 import { UserImage } from './entities/user-images.entity';
 import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
 import { Room } from 'src/rooms/entities/room.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
     TypeOrmModule.forFeature([FakeUser, UserImage, Room]), 
-    ExceptionHandlerModule
+    ExceptionHandlerModule,
+    AuthModule
   ],
   exports: [UsersService, TypeOrmModule],
 })

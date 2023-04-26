@@ -7,14 +7,19 @@ import { CommonModule } from 'src/common/common.module';
 import { FilesModule } from 'src/files/files.module';
 import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
 import { User } from 'src/auth/entities/user.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [RoomsController],
   providers: [RoomsService],
   imports: [
     TypeOrmModule.forFeature([Room, User]), // importa el modelo TypeOrm y la aplica al Producto
-    ExceptionHandlerModule
+    ExceptionHandlerModule,
+    AuthModule
   ],
-  exports: [RoomsService, TypeOrmModule],
+  exports: [
+    RoomsService, 
+    TypeOrmModule
+  ],
 })
 export class RoomsModule {}
