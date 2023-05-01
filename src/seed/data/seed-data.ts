@@ -114,106 +114,33 @@ export const initialRooms: SeedRooms = {
 };
 
 interface SeedUser {
-  description: string;
-  images: string[];
-  username: string;
+  email: string;
+  password: string;
+  fullName: string;
+  isActive: boolean;
 }
 
 interface SeedUsers {
   users: SeedUser[];
 }
 
+// export const initialUsers: SeedUsers = {
+//   users: []
+// };
+
 export const initialUsers: SeedUsers = {
-  users: [
-    {
-      description: "I'm a happy person",
-      images: ['image1.jpg', 'image2.hpg'],
-      username: 'Sergi',
-    },
-    {
-      description: "I'm a freelance developer",
-      images: ['image3.jpg', 'image4.hpg'],
-      username: 'David',
-    },
-    {
-      description: 'I love traveling and photography',
-      images: ['image5.jpg', 'image6.hpg'],
-      username: 'Anna',
-    },
-    {
-      description: "I'm a fitness enthusiast",
-      images: ['image7.jpg', 'image8.hpg'],
-      username: 'Max',
-    },
-    {
-      description: "I'm a foodie and a chef",
-      images: ['image9.jpg', 'image10.hpg'],
-      username: 'Linda',
-    },
-    {
-      description: "I'm a musician",
-      images: ['image11.jpg', 'image12.hpg'],
-      username: 'Tom',
-    },
-    {
-      description: "I'm a gamer",
-      images: ['image13.jpg', 'image14.hpg'],
-      username: 'Sam',
-    },
-    {
-      description: "I'm a writer",
-      images: ['image15.jpg', 'image16.hpg'],
-      username: 'Alice',
-    },
-    {
-      description: "I'm a fashion designer",
-      images: ['image17.jpg', 'image18.hpg'],
-      username: 'Nina',
-    },
-    {
-      description: "I'm a software engineer",
-      images: ['image19.jpg', 'image20.hpg'],
-      username: 'Mark',
-    },
-    {
-      description: "I'm a yoga instructor",
-      images: ['image21.jpg', 'image22.hpg'],
-      username: 'Yvonne',
-    },
-    {
-      description: "I'm an artist",
-      images: ['image23.jpg', 'image24.hpg'],
-      username: 'Oliver',
-    },
-    {
-      description: "I'm a dog lover",
-      images: ['image25.jpg', 'image26.hpg'],
-      username: 'Sarah',
-    },
-    {
-      description: "I'm a cat person",
-      images: ['image27.jpg', 'image28.hpg'],
-      username: 'Grace',
-    },
-    {
-      description: "I'm a teacher",
-      images: ['image29.jpg', 'image30.hpg'],
-      username: 'John',
-    },
-    {
-      description: "I'm a dancer",
-      images: ['image31.jpg', 'image32.hpg'],
-      username: 'Sara',
-    },
-    {
-      description: "I'm a football fan",
-      images: ['image33.jpg', 'image34.hpg'],
-      username: 'Peter',
-    },
-    {
-      description: "I'm a bookworm",
-      images: ['image35.jpg', 'image36.hpg'],
-      username: 'Jane',
-    },
-  ],
-};
+  users: []
+}
+
+
+for (let i = 0; i < 10; i++) {
+  const user: SeedUser = {
+    email: `user${i}@example.com`,
+    password: "MyPassword123",
+    fullName: `User ${i}`,
+    isActive: true
+  };
+  initialUsers.users.push(user);
+}
+
+

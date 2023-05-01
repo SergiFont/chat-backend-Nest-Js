@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './users/users.module';
 import { CommonModule } from './common/common.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { SeedModule } from './seed/seed.module';
@@ -22,7 +21,6 @@ import { ExceptionHandlerModule } from './exception-handler/exception-handler.mo
       autoLoadEntities: true,
       synchronize: true,
     }),
-    UsersModule,
     CommonModule,
     RoomsModule,
     SeedModule,

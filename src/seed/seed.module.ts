@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { SeedService } from './seed.service';
 import { SeedController } from './seed.controller';
 import { RoomsModule } from 'src/rooms/rooms.module';
-import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
@@ -10,7 +9,6 @@ import { AuthModule } from 'src/auth/auth.module';
   providers: [SeedService],
   imports: [
     RoomsModule, 
-    UsersModule,
     AuthModule
   ],
 })

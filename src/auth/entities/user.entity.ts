@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Room } from 'src/rooms/entities/room.entity';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -28,6 +29,10 @@ export class User {
     default: ['user'],
   })
   roles: string[];
+
+  @ManyToMany(() => Room)
+    @JoinTable()
+    rooms?: Room[]
 
   @BeforeInsert()
     checkFields() {
