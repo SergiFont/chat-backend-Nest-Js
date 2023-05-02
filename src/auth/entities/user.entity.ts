@@ -17,12 +17,12 @@ export class User {
   password: string;
 
   @Column('text')
-  fullName: string;
+  fullname: string;
 
   @Column('boolean', {
     default: true,
   })
-  isActive: boolean;
+  isactive: boolean;
 
   @Column('text', {
     array: true,

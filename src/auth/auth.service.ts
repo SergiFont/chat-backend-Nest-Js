@@ -37,7 +37,7 @@ export class AuthService {
 
       return {
         ...user,
-        token: this.getJwtToken({ email: user.email })
+        token: this.getJwtToken({ id: user.id })
       }
 
     } catch (error) {
@@ -45,26 +45,43 @@ export class AuthService {
     }
   }
 
-  async list(): Promise<User[]> {
-    return await this.userRepository.find()
+  async list(user: User): Promise<Object> {
+    const {token} = await this.checkAuthStatus(user)
+    const usersData = await this.userRepository.find({
+      select: { email: true, fullname: true}
+    })
+    return {usersData, token}
   }
 
-  async findOne(term: string) {
-    let user: User
+  async findOne(term: string, user: User) { // se puede buscar por ID o fullName
+    const {token} = await this.checkAuthStatus(user)
+    let userData: User
 
-    if(isUUID(term)) user = await this.userRepository.findOneBy({id: term})
+    if(isUUID(term)) userData = await this.userRepository.findOne({
+      where: { id: term },
+      select: { email: true, fullname: true}
+    })
     else {
-      const queryBuilder = this.userRepository.createQueryBuilder('user')
-      user = await queryBuilder
-        .where('UPPER(email) =:email', {
-          email: term.toUpperCase(),
-        })
-        .getOne()
+      userData = await this.userRepository.findOne({
+        where: {fullname: term},
+        select: {email: true, fullname: true}
+        
+      })
+      // const queryBuilder = this.userRepository.createQueryBuilder('user')
+      // user = await queryBuilder
+      //   .select()
+      //   .where('UPPER(fullname) =:fullname', {
+      //     fullname: term.toUpperCase(),
+      //   })
+      //   .getOne()
     }
 
-    if (!user) throw new NotFoundException(`User with term "${term}" not found`)
+    if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
 
-    return user
+    return {
+      ...userData,
+      token
+    }
   }
   
 
@@ -86,21 +103,21 @@ export class AuthService {
 
       return {
         ...user,
-        token: this.getJwtToken({ email: user.email })
+        token: this.getJwtToken({ id: user.id })
       }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.preload({
+    const userData = await this.userRepository.preload({
       id,
       ...updateUserDto
     })
 
-    if (!user) throw new NotFoundException(`User with id: ${id} not found`)
+    if (!userData) throw new NotFoundException(`User with id: ${id} not found`)
 
     try {
-      await this.userRepository.save(user)
-      return user
+      await this.userRepository.save(userData)
+      return userData
     } catch (error) {
       this.exceptionHandlerService.handleDbExceptions(error)
     }
@@ -120,5 +137,17 @@ async deleteAllUsers() {
   } catch (error) {
     this.exceptionHandlerService.handleDbExceptions(error);
   }
+}
+
+async checkAuthStatus(user: User) {
+
+  delete user.password
+  delete user.roles
+
+  return {
+    ...user,
+    token: this.getJwtToken({ id: user.id })
+  }
+
 }
 }

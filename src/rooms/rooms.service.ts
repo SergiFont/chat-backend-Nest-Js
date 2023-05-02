@@ -13,6 +13,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { FilesService } from 'src/files/files.service';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class RoomsService {

@@ -116,7 +116,7 @@ export const initialRooms: SeedRooms = {
 interface SeedUser {
   email: string;
   password: string;
-  fullName: string;
+  fullname: string;
   isActive: boolean;
 }
 
@@ -137,7 +137,7 @@ for (let i = 0; i < 10; i++) {
   const user: SeedUser = {
     email: `user${i}@example.com`,
     password: "MyPassword123",
-    fullName: `User ${i}`,
+    fullname: `User ${i}`,
     isActive: true
   };
   initialUsers.users.push(user);
