@@ -9,7 +9,7 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Room } from './entities/room.entity';
 import { Repository } from 'typeorm';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { FilesService } from 'src/files/files.service';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
@@ -24,7 +24,7 @@ export class RoomsService {
     private readonly exceptionHandlerService: ExceptionHandlerService
   ) {}
 
-  async create(createRoomDto: CreateRoomDto) {
+  async create(createRoomDto: CreateRoomDto): Promise<Room> {
     try {
       const room = this.roomRepository.create(createRoomDto); // crea instancia del room
       await this.roomRepository.save(room); // graba la instancia en la base de datos
@@ -35,7 +35,7 @@ export class RoomsService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<Room[]> {
     const { limit = 10, offset = 0 } = paginationDto;
 
     return await this.roomRepository.find({
@@ -44,7 +44,7 @@ export class RoomsService {
     });
   }
 
-  async findOne(term: string) {
+  async findOne(term: string): Promise<Room> {
     let room: Room;
 
     if (isUUID(term)) room = await this.roomRepository.findOneBy({ id: term });
@@ -64,7 +64,7 @@ export class RoomsService {
     return room;
   }
 
-  async update(id: string, updateRoomDto: UpdateRoomDto) {
+  async update(id: string, updateRoomDto: UpdateRoomDto): Promise<Room> {
     const room = await this.roomRepository.preload({
       id,
       ...updateRoomDto,
@@ -80,7 +80,7 @@ export class RoomsService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     await this.findOne(id);
     await this.roomRepository.delete(id);
     return 'Room deleted';

@@ -53,7 +53,7 @@ export class AuthService {
     return {usersData, token}
   }
 
-  async findOne(term: string, user: User) { // se puede buscar por ID o fullName
+  async findOne(term: string, user: User): Promise<Object> { // se puede buscar por ID o fullName
     const {token} = await this.checkAuthStatus(user)
     let userData: User
 
@@ -91,7 +91,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true}
+      select: { email: true, password: true, id: true}
     })
 
     if ( !user )
@@ -107,7 +107,7 @@ export class AuthService {
       }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const userData = await this.userRepository.preload({
       id,
       ...updateUserDto

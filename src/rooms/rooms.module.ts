@@ -3,7 +3,6 @@ import { RoomsService } from './rooms.service';
 import { RoomsController } from './rooms.controller';
 import { Room } from './entities/room.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommonModule } from 'src/common/common.module';
 import { FilesModule } from 'src/files/files.module';
 import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
 import { User } from 'src/auth/entities/user.entity';
