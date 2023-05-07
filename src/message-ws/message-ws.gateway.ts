@@ -16,47 +16,55 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
     private readonly jwtService: JwtService
     ) {}
 
-  async handleConnection(client: Socket) {
-    const token = client.handshake.headers.authentication as string
-    let payload: JwtPayload
-    try {
-      payload = this.jwtService.verify( token )
-      await this.messageWsService.registerClient ( client, payload.id )
-    } catch (error) {
-      client.disconnect()
-      return
-    }
+  handleConnection(client: Socket) {
+      // this.wss.on('connection', () => {
+      console.log('Client connected');
 
-    // console.log(payload);
+      this.messageWsService.message( client, this.wss )
+    // })
 
 
-    // const clients = this.messageWsService.getConnectedClients()
 
-    
-    this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
+    // const token = client.handshake.headers.authentication as string
+    // let payload: JwtPayload
+    // try {
+    //   payload = this.jwtService.verify( token )
+    //   await this.messageWsService.registerClient ( client, payload.id )
+    // } catch (error) {
+    //   client.disconnect()
+    //   return
+    // }
+  
+    // this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
 
   }
 
   handleDisconnect(client: Socket) {
-    const clientName = this.messageWsService.getUserFullName(client.id)
-    this.messageWsService.deleteClientFromList(clientName)
-    this.messageWsService.removeClient( client.id )
+    
+    this.messageWsService.disconnect(client)
+
+    // this.wss.on('disconnect', () => {
+      // console.log('Client disconnected');
+    // })
+    // const clientName = this.messageWsService.getUserFullName(client.id)
+    // this.messageWsService.deleteClientFromList(clientName)
+    // this.messageWsService.removeClient( client.id )
 
 
-    this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
+    // this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
 
   }
 
-  @SubscribeMessage('message-from-client')
-  onMessageFromClient( client: Socket, payload: NewMessageDto ) {
+  // @SubscribeMessage('message-from-client')
+  // onMessageFromClient( client: Socket, payload: NewMessageDto ) {
     
-    // Emite a todos INCLUIDO a si mismo
-    this.wss.emit('message-from-server', {
-      fullName: this.messageWsService.getUserFullName( client.id ),
-      message: payload.message || 'no-message'
-    })
+  //   // Emite a todos INCLUIDO a si mismo
+  //   this.wss.emit('message-from-server', {
+  //     fullName: this.messageWsService.getUserFullName( client.id ),
+  //     message: payload.message || 'no-message'
+  //   })
     
-  }
+  // }
   
   // Emite únicamente al cliente!
   // client.emit('message-from-server', {
@@ -69,4 +77,8 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
   //   fullName: 'OREWA',
   //   message: payload.message || 'no-message'
   // })
+
+  // @SubscribeMessage('message')
+
+
 }
