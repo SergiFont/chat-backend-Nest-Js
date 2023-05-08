@@ -5,6 +5,8 @@ import { MessageWsService } from './message-ws.service';
 import { NewMessageDto } from './dtos/new-message.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/auth/interfaces';
+import { CreateUserDto } from 'src/auth/dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway({ cors: true })
 export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -13,27 +15,25 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   constructor(
     private readonly messageWsService: MessageWsService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly authService: AuthService
     ) {}
 
-  async handleConnection(client: Socket) {
-    const token = client.handshake.headers.authentication as string
-    let payload: JwtPayload
-    try {
-      payload = this.jwtService.verify( token )
-      await this.messageWsService.registerClient ( client, payload.id )
-    } catch (error) {
-      client.disconnect()
-      return
-    }
-
-    // console.log(payload);
+  async handleConnection( client: Socket ) {
 
 
-    // const clients = this.messageWsService.getConnectedClients()
+    // const token = client.handshake.headers.authentication as string
+    // let payload: JwtPayload
 
+    // try {
+    //   payload = this.jwtService.verify( token )
+    //   await this.messageWsService.registerClient ( client, payload.id )
+    // } catch (error) {
+    //   client.disconnect()
+    //   return
+    // }
     
-    this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
+    // this.wss.emit( 'clients-updated', this.messageWsService.getClientList() )
 
   }
 
@@ -48,6 +48,15 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
   }
 
   @SubscribeMessage('message-from-client')
+
+  onUserRegister( client: Socket, payload: CreateUserDto) {
+
+    this.authService.findOne()
+
+  }
+
+
+
   onMessageFromClient( client: Socket, payload: NewMessageDto ) {
     
     // Emite a todos INCLUIDO a si mismo
