@@ -38,7 +38,7 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
   }
 
   handleDisconnect(client: Socket) {
-    const clientName = this.messageWsService.getUserFullName(client.id)
+    const clientName = this.messageWsService.getUserusername(client.id)
     this.messageWsService.deleteClientFromList(clientName)
     this.messageWsService.removeClient( client.id )
 
@@ -51,7 +51,7 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
 
   onUserRegister( client: Socket, payload: CreateUserDto) {
 
-    this.authService.findOne()
+    // this.authService.findOne()
 
   }
 
@@ -61,7 +61,7 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
     
     // Emite a todos INCLUIDO a si mismo
     this.wss.emit('message-from-server', {
-      fullName: this.messageWsService.getUserFullName( client.id ),
+      username: this.messageWsService.getUserusername( client.id ),
       message: payload.message || 'no-message'
     })
     
@@ -69,13 +69,13 @@ export class MessageWsGateway implements OnGatewayConnection, OnGatewayDisconnec
   
   // Emite únicamente al cliente!
   // client.emit('message-from-server', {
-  //   fullName: 'OREWA',
+  //   username: 'OREWA',
   //   message: payload.message || 'no-message'
   // })
 
   // Emite a todos MENOS, al cliente emisor
   // client.broadcast.emit('message-from-server', {
-  //   fullName: 'OREWA',
+  //   username: 'OREWA',
   //   message: payload.message || 'no-message'
   // })
 }

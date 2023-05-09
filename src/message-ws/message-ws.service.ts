@@ -49,7 +49,7 @@ export class MessageWsService {
     }
 
     clientsList( client: Socket ): void {
-        this.clients.push(this.getUserFullName(client.id))
+        this.clients.push(this.getUserusername(client.id))
     }
 
     deleteClientFromList(clientName: string) {
@@ -61,8 +61,8 @@ export class MessageWsService {
         console.log(this.clients);
     }
 
-    getUserFullName( socketId: string ) {
-        return this.connectedClients[socketId].user.fullname
+    getUserusername( socketId: string ) {
+        return this.connectedClients[socketId].user.username
     }
 
     private checkUserConnection( user: User) {

@@ -20,36 +20,35 @@ import { User } from './entities/user.entity';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
-  
+ 
   @Post('register')
-  @ApiResponse({ status:201, description: 'User registered' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status:201, description: 'User registered' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
   create(@Body() createUserDto: CreateUserDto): Promise<Object> {
     return this.authService.create(createUserDto);
   }
 
   @Post('login')
-  @ApiResponse({ status:201, description: 'User logged in' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status:201, description: 'User logged in' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
   loginUser(@Body() loginUserDto: LoginUserDto): Promise<Object> {
     return this.authService.login( loginUserDto );
   }
 
   @Get()
   @Auth()
-  @ApiResponse({ status:201, description: 'Show users list' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  // @ApiResponse({ status:201, description: 'Show users list' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
   userList(@GetUser() user: User): Promise<Object> {
     return this.authService.list(user);
   }
 
   @Get(':term')
   @Auth()
-  @ApiResponse({ status:201, description: 'Show user if exist' })
-  @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  // @ApiResponse({ status:201, description: 'Show user if exist' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
   findOneUser(@Param('term') term: string, @GetUser() user: User): Promise<Object> {
     return this.authService.findOne(term, user)
   }

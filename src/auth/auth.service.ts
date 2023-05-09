@@ -48,30 +48,30 @@ export class AuthService {
   async list(user: User): Promise<Object> {
     const {token} = await this.checkAuthStatus(user)
     const usersData = await this.userRepository.find({
-      select: { email: true, fullname: true}
+      select: { email: true, username: true}
     })
     return {usersData, token}
   }
 
-  async findOne(term: string, user: User): Promise<Object> { // se puede buscar por ID o fullName
+  async findOne(term: string, user: User): Promise<Object> { // se puede buscar por ID o username
     const {token} = await this.checkAuthStatus(user)
     let userData: User
 
     if(isUUID(term)) userData = await this.userRepository.findOne({
       where: { id: term },
-      select: { email: true, fullname: true}
+      select: { email: true, username: true}
     })
     else {
       userData = await this.userRepository.findOne({
-        where: {fullname: term},
-        select: {email: true, fullname: true}
+        where: {username: term},
+        select: {email: true, username: true}
         
       })
       // const queryBuilder = this.userRepository.createQueryBuilder('user')
       // user = await queryBuilder
       //   .select()
-      //   .where('UPPER(fullname) =:fullname', {
-      //     fullname: term.toUpperCase(),
+      //   .where('UPPER(username) =:username', {
+      //     username: term.toUpperCase(),
       //   })
       //   .getOne()
     }
@@ -91,7 +91,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true}
+      select: { email: true, password: true, id: true, username: true, isactive: true, roles: true }
     })
 
     if ( !user )
@@ -102,7 +102,7 @@ export class AuthService {
     delete user.password
 
       return {
-        ...user,
+        user,
         token: this.getJwtToken({ id: user.id })
       }
   }

@@ -22,7 +22,7 @@ export class User {
 
   @ApiProperty()
   @Column('text')
-  fullname: string;
+  username: string;
 
   @ApiProperty()
   @Column('boolean', {
