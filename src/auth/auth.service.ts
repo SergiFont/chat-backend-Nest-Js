@@ -80,7 +80,7 @@ export class AuthService {
   }
   
   async list(user: User): Promise<ListResponse> {
-    const {token} = await this.checkAuthStatus(user)
+    const {token} = this.checkAuthStatus(user)
     const usersData = await this.userRepository.find({
       select: { email: true, username: true}
     })
@@ -88,12 +88,11 @@ export class AuthService {
   }
 
   async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
-    const {token} = await this.checkAuthStatus(user)
+    const {token} = this.checkAuthStatus(user)
     let userData: User
 
     if(isUUID(term)) userData = await this.userRepository.findOne({
       where: { id: term },
-      select: { email: true, username: true}
     })
     else {
       userData = await this.userRepository.findOne({
@@ -124,7 +123,7 @@ export class AuthService {
   }
 
   async update(targetId: string, updateUserDto: UpdateUserDto, user: User): Promise<RequestsResponse> {
-    const {token} = await this.checkAuthStatus(user)
+    const {token} = this.checkAuthStatus(user)
     const requirerUser = await this.userRepository.findOneBy({ id: user.id })
     const standardEmail = updateUserDto.email?.toLowerCase()
     const userToModifie = await this.userRepository.preload({
@@ -154,7 +153,7 @@ export class AuthService {
     return token
 }
 
-async deleteAllUsers() {
+  async deleteAllUsers() {
   const query = this.userRepository.createQueryBuilder('rooms');
 
   try {
@@ -164,13 +163,13 @@ async deleteAllUsers() {
   }
 }
 
-async checkAuthStatus(user: User) {
+  checkAuthStatus(user: User): RequestsResponse  {
 
   delete user.password
   delete user.roles
 
   return {
-    ...user,
+    user,
     token: this.getJwtToken({ id: user.id })
   }
 

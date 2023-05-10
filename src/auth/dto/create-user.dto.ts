@@ -26,5 +26,9 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString()
   @MinLength(1)
+  @Matches(/^\S*$/, {
+    message:
+    'Username cannot contain white spaces'
+  })
   username: string;
 }
