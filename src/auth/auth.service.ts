@@ -4,13 +4,11 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
-import { LoginUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto, CreateUserDto } from './dto';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { isUUID } from 'class-validator';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { RequestsResponse, LoginResponse, JwtPayload, ListResponse } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -22,22 +20,23 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
     
-  async create(createUserDto: CreateUserDto): Promise <Object> {  
+  async create(createUserDto: CreateUserDto): Promise <User> {  
     try {
-
-      const { password, ...userData } = createUserDto
+      
+      const { password, email, username } = createUserDto
+      const standardEmail = email.toLowerCase()
       
       const user = this.userRepository.create({
-        ...userData,
+        username,
+        email: standardEmail,
         password: bcrypt.hashSync(password, 10)
       })
 
-      await this.userRepository.save( user )
+      const newUser = await this.userRepository.save( user )
       delete user.password
 
       return {
-        ...user,
-        token: this.getJwtToken({ id: user.id })
+        ...newUser,
       }
 
     } catch (error) {
@@ -45,15 +44,50 @@ export class AuthService {
     }
   }
 
-  async list(user: User): Promise<Object> {
+  
+  async register( createUserDto: CreateUserDto ): Promise <LoginResponse> {
+
+    const user = await this.create( createUserDto )
+
+    return {
+      user,
+      token: this.getJwtToken({ id: user.id })
+    }
+
+  }
+
+  async login(loginUserDto: LoginUserDto): Promise <LoginResponse> {
+
+    const { password, email } = loginUserDto
+    const standardEmail = email.toLowerCase()
+
+    const user = await this.userRepository.findOne({
+      where: { email: standardEmail },
+      select: { email: true, password: true, id: true, username: true, isactive: true, roles: true }
+    })
+
+    if ( !user )
+    throw new UnauthorizedException('Credentials are not valid (email)')
+
+    if (!bcrypt.compareSync( password, user.password ) ) throw new UnauthorizedException('Credentials are not valid (password)')
+
+    delete user.password
+
+      return {
+        user,
+        token: this.getJwtToken({ id: user.id })
+      }
+  }
+  
+  async list(user: User): Promise<ListResponse> {
     const {token} = await this.checkAuthStatus(user)
     const usersData = await this.userRepository.find({
       select: { email: true, username: true}
     })
-    return {usersData, token}
+    return {user: usersData, token}
   }
 
-  async findOne(term: string, user: User): Promise<Object> { // se puede buscar por ID o username
+  async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
     const {token} = await this.checkAuthStatus(user)
     let userData: User
 
@@ -79,45 +113,36 @@ export class AuthService {
     if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
 
     return {
-      ...userData,
+      user: userData,
       token
     }
   }
-  
 
-  async login(loginUserDto: LoginUserDto): Promise <Object> {
-
-    const { password, email } = loginUserDto
-
-    const user = await this.userRepository.findOne({
-      where: { email },
-      select: { email: true, password: true, id: true, username: true, isactive: true, roles: true }
-    })
-
-    if ( !user )
-    throw new UnauthorizedException('Credentials are not valid (email)')
-
-    if (!bcrypt.compareSync( password, user.password ) ) throw new UnauthorizedException('Credentials are not valid (password)')
-
-    delete user.password
-
-      return {
-        user,
-        token: this.getJwtToken({ id: user.id })
-      }
+  async findUserById( id: string ) {
+    const user = await this.userRepository.findOneBy({id})
+    return user
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    const userData = await this.userRepository.preload({
-      id,
-      ...updateUserDto
+  async update(targetId: string, updateUserDto: UpdateUserDto, user: User): Promise<RequestsResponse> {
+    const {token} = await this.checkAuthStatus(user)
+    const requirerUser = await this.userRepository.findOneBy({ id: user.id })
+    const standardEmail = updateUserDto.email?.toLowerCase()
+    const userToModifie = await this.userRepository.preload({
+      ...updateUserDto,
+      id: targetId,
+      email: standardEmail
     })
 
-    if (!userData) throw new NotFoundException(`User with id: ${id} not found`)
+    if (requirerUser.id !== userToModifie.id ) throw new UnauthorizedException('Only the user can modify itself')
+
+    if (!userToModifie) throw new NotFoundException(`User with id: ${targetId} not found`)
 
     try {
-      await this.userRepository.save(userData)
-      return userData
+      await this.userRepository.save(userToModifie)
+      return {
+        user : userToModifie,
+        token
+      }
     } catch (error) {
       this.exceptionHandlerService.handleDbExceptions(error)
     }

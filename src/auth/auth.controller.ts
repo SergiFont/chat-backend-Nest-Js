@@ -3,10 +3,10 @@ import {
   Post,
   Body,
   Get,
-  UseGuards,
   Param,
   ParseUUIDPipe,
-  Patch
+  Patch,
+  Request
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -21,11 +21,16 @@ import { User } from './entities/user.entity';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
  
-  @Post('register')
+  @Post()
   // @ApiResponse({ status:201, description: 'User registered' })
   // @ApiResponse({ status: 400, description: 'Bad request' })
   create(@Body() createUserDto: CreateUserDto): Promise<Object> {
     return this.authService.create(createUserDto);
+  }
+
+  @Post('register')
+  register( @Body() createUserDto: CreateUserDto ) {
+    return this.authService.register( createUserDto )
   }
 
   @Post('login')
@@ -40,8 +45,9 @@ export class AuthController {
   // @ApiResponse({ status:201, description: 'Show users list' })
   // @ApiResponse({ status: 400, description: 'Bad request' })
   // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  userList(@GetUser() user: User): Promise<Object> {
-    return this.authService.list(user);
+  userList( @Request() req: Request ) {
+    // const user: User = req['user']
+    return this.authService.list(req['user']);
   }
 
   @Get(':term')
@@ -49,17 +55,17 @@ export class AuthController {
   // @ApiResponse({ status:201, description: 'Show user if exist' })
   // @ApiResponse({ status: 400, description: 'Bad request' })
   // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  findOneUser(@Param('term') term: string, @GetUser() user: User): Promise<Object> {
-    return this.authService.findOne(term, user)
+  findOneUser( @Param('term') term: string, @Request() req: Request): Promise<Object> {
+    return this.authService.findOne(term, req['user'])
   }
 
   @Patch(':id')
-  @Auth(ValidRoles.admin)
+  @Auth()
   @ApiResponse({ status:201, description: 'Update user if exist' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  update( @Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto): Promise<Object> {
-    return this.authService.update(id, updateUserDto)
+  update( @Param('id', ParseUUIDPipe) id: string, @Body() updateUserDto: UpdateUserDto, @Request() req: Request): Promise<Object> {
+    return this.authService.update(id, updateUserDto, req['user'])
   }
 
 }

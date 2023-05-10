@@ -21,7 +21,9 @@ export class User {
   password: string;
 
   @ApiProperty()
-  @Column('text')
+  @Column('text', {
+    unique: true
+  })
   username: string;
 
   @ApiProperty()
@@ -41,13 +43,13 @@ export class User {
     @JoinTable()
     rooms?: Room[]
 
-  @BeforeInsert()
-    checkFields() {
-        this.email = this.email.toLowerCase().trim()
-    }
+  // @BeforeInsert()
+  //   checkFields() {
+  //       this.email = this.email.toLowerCase().trim()
+  //   }
 
-    @BeforeUpdate()
-    checkFieldsUpdate() {
-        this.checkFields()
-    }
+  // @BeforeUpdate()
+  //   checkFieldsUpdate() {
+  //       this.checkFields()
+  //   }
 }

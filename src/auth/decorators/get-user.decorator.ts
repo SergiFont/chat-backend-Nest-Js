@@ -1,5 +1,6 @@
 import { ExecutionContext, InternalServerErrorException, createParamDecorator } from "@nestjs/common";
 import { Request } from "express";
+import { AuthService } from "../auth.service";
 
 
 
@@ -16,4 +17,4 @@ export const GetUser = createParamDecorator(
             ? user
             : user[data]
     }
-)
+) // no puedo inyectar el authService en una función. Tendré que pasar la responsabilidad de este decorador al guard user-request
