@@ -79,18 +79,11 @@ export class AuthService {
       }
   }
   
-  async list(user: User): Promise<ListResponse> {
-    const {token} = this.checkAuthStatus(user)
-    const usersData = await this.userRepository.find({
-      select: { email: true, username: true}
-    })
-    return {user: usersData, token}
-  }
-
+  
   async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
     const {token} = this.checkAuthStatus(user)
     let userData: User
-
+    
     if(isUUID(term)) userData = await this.userRepository.findOne({
       where: { id: term },
     })
@@ -108,20 +101,20 @@ export class AuthService {
       //   })
       //   .getOne()
     }
-
+    
     if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
-
+    
     return {
       user: userData,
       token
     }
   }
-
+  
   async findUserById( id: string ) {
     const user = await this.userRepository.findOneBy({id})
     return user
   }
-
+  
   async update(targetId: string, updateUserDto: UpdateUserDto, user: User): Promise<RequestsResponse> {
     const {token} = this.checkAuthStatus(user)
     const requirerUser = await this.userRepository.findOneBy({ id: user.id })
@@ -131,11 +124,11 @@ export class AuthService {
       id: targetId,
       email: standardEmail
     })
-
+    
     if (requirerUser.id !== userToModifie.id ) throw new UnauthorizedException('Only the user can modify itself')
-
+    
     if (!userToModifie) throw new NotFoundException(`User with id: ${targetId} not found`)
-
+    
     try {
       await this.userRepository.save(userToModifie)
       return {
@@ -146,32 +139,39 @@ export class AuthService {
       this.exceptionHandlerService.handleDbExceptions(error)
     }
   }
-
+  
   private getJwtToken( payload: JwtPayload ): string {
-
+    
     const token = this.jwtService.sign( payload )
     return token
-}
-
+  }
+  
   async deleteAllUsers() {
-  const query = this.userRepository.createQueryBuilder('rooms');
-
-  try {
-    return await query.delete().where({}).execute();
-  } catch (error) {
-    this.exceptionHandlerService.handleDbExceptions(error);
+    const query = this.userRepository.createQueryBuilder('rooms');
+    
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.exceptionHandlerService.handleDbExceptions(error);
+    }
   }
-}
-
+  
   checkAuthStatus(user: User): RequestsResponse  {
-
-  delete user.password
-  delete user.roles
-
-  return {
-    user,
-    token: this.getJwtToken({ id: user.id })
+    
+    delete user.password
+    
+    
+    return {
+      user,
+      token: this.getJwtToken({ id: user.id })
+    }
+    
   }
-
-}
+  async list(user: User): Promise<ListResponse> {
+    const {token} = this.checkAuthStatus(user)
+    const usersData = await this.userRepository.find({
+      select: { email: true, username: true}
+    })
+    return {user: usersData, token}
+  }
 }

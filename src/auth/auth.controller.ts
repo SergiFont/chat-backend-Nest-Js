@@ -50,15 +50,7 @@ export class AuthController {
     return this.authService.list(req['user']);
   }
 
-  @Get(':term')
-  @Auth()
-  // @ApiResponse({ status:201, description: 'Show user if exist' })
-  // @ApiResponse({ status: 400, description: 'Bad request' })
-  // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  findOneUser( @Param('term') term: string, @Request() req: Request): Promise<RequestsResponse> {
-    return this.authService.findOne(term, req['user'])
-  }
-
+  
   @Patch(':id')
   @Auth()
   // @ApiResponse({ status:201, description: 'Update user if exist' })
@@ -68,4 +60,18 @@ export class AuthController {
     return this.authService.update(id, updateUserDto, req['user'])
   }
 
+  @Get('checkAuth')
+  @Auth()
+  checkAuthStatus( @Request() req: Request ) {
+    return this.authService.checkAuthStatus(req['user'])
+  }
+  
+  @Get(':term')
+  @Auth()
+  // @ApiResponse({ status:201, description: 'Show user if exist' })
+  // @ApiResponse({ status: 400, description: 'Bad request' })
+  // @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  findOneUser( @Param('term') term: string, @Request() req: Request): Promise<RequestsResponse> {
+    return this.authService.findOne(term, req['user'])
+  }
 }
