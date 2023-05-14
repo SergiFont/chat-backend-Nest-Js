@@ -44,7 +44,7 @@ export class RoomsService {
     });
   }
 
-  async findOne(term: string): Promise<Room> {
+  async findOne(term: string): Promise<Room[]> {
     let room: Room;
 
     if (isUUID(term)) room = await this.roomRepository.findOneBy({ id: term });
@@ -61,7 +61,7 @@ export class RoomsService {
 
     if (!room)
       throw new NotFoundException(`Room with term "${term}" not found`);
-    return room;
+    return [room];
   }
 
   async update(id: string, updateRoomDto: UpdateRoomDto): Promise<Room> {

@@ -160,7 +160,6 @@ export class AuthService {
     
     delete user.password
     
-    
     return {
       user,
       token: this.getJwtToken({ id: user.id })
