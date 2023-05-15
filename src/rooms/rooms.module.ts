@@ -7,6 +7,7 @@ import { FilesModule } from 'src/files/files.module';
 import { ExceptionHandlerModule } from 'src/exception-handler/exception-handler.module';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   controllers: [RoomsController],
@@ -14,7 +15,8 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([Room, User]), // importa el modelo TypeOrm y la aplica al Producto
     ExceptionHandlerModule,
-    AuthModule
+    AuthModule,
+    ConfigModule
   ],
   exports: [
     RoomsService, 
