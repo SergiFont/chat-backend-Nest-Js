@@ -1,7 +1,7 @@
 import { User } from "../entities/user.entity";
 
 
-export interface RequestsResponse {
-    user: User[],
+export interface CheckAuthResponse {
+    user: User,
     token: string
 }

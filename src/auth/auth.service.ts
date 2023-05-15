@@ -8,7 +8,7 @@ import { User } from './entities/user.entity';
 import { LoginUserDto, UpdateUserDto, CreateUserDto } from './dto';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
 import { isUUID } from 'class-validator';
-import { RequestsResponse, LoginResponse, JwtPayload, ListResponse } from './interfaces';
+import { RequestsResponse, LoginResponse, JwtPayload, ListResponse, CheckAuthResponse } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -105,7 +105,7 @@ export class AuthService {
     if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
     
     return {
-      user: userData,
+      user: [userData],
       token
     }
   }
@@ -132,7 +132,7 @@ export class AuthService {
     try {
       await this.userRepository.save(userToModifie)
       return {
-        user : userToModifie,
+        user : [userToModifie],
         token
       }
     } catch (error) {
@@ -156,7 +156,7 @@ export class AuthService {
     }
   }
   
-  checkAuthStatus(user: User): RequestsResponse  {
+  checkAuthStatus(user: User): CheckAuthResponse  {
     
     delete user.password
     

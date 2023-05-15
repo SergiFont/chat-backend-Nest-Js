@@ -1,3 +1,4 @@
+export { CheckAuthResponse } from './check-auth-response';
 export { ListResponse } from './list-response';
 export { LoginResponse } from './login-response';
 export { RequestsResponse } from './requests-response';

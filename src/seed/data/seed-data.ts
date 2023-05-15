@@ -137,7 +137,7 @@ for (let i = 0; i < 10; i++) {
   const user: SeedUser = {
     email: `user${i}@example.com`,
     password: "MyPassword123",
-    username: `User ${i}`,
+    username: `User-${i}`,
     isActive: true
   };
   initialUsers.users.push(user);
