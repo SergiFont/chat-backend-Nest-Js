@@ -7,7 +7,6 @@ import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
 import { ExceptionHandlerModule } from './exception-handler/exception-handler.module';
-import { MessageWsModule } from './message-ws/message-ws.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { MessageWsModule } from './message-ws/message-ws.module';
     FilesModule,
     AuthModule,
     ExceptionHandlerModule,
-    MessageWsModule,
   ],
 })
 export class AppModule {}
