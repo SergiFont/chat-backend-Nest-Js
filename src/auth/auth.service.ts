@@ -66,8 +66,8 @@ export class AuthService {
       select: { email: true, password: true, id: true, username: true, isactive: true, roles: true }
     })
 
-    if ( !user )
-    throw new UnauthorizedException('Credentials are not valid (email)')
+    if ( !user ) throw new UnauthorizedException('Credentials are not valid (email)')
+    if ( !user.isactive ) throw new UnauthorizedException('User not active')
 
     if (!bcrypt.compareSync( password, user.password ) ) throw new UnauthorizedException('Credentials are not valid (password)')
 
