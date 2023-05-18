@@ -32,17 +32,17 @@ export class UserList {
         return this.list
     }
 
-    public getUser( id: string ) {
-        return this.list.find( user => user.id === id)
+    public getUser( wsId: string ) {
+        return this.list.find( user => user.wsId === wsId)
     }
 
-    public getUsersRoom( room: string ) {
+    public getUsersInRoom( room: string ) {
         return this.list.filter( user => user.room === room)
     }
 
-    public deleteUser( id: string ) {
-        const tempUser = this.getUser(id)
-        this.list = this.list.filter( user => user.id !== id )
+    public deleteUser( wsId: string ) {
+        const tempUser = this.getUser(wsId)
+        this.list = this.list.filter( user => user.wsId !== wsId )
 
         return tempUser
     }

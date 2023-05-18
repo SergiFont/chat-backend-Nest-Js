@@ -1,0 +1,1 @@
+export type websocketId = string
