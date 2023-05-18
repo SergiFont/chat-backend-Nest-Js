@@ -874,6 +874,40 @@
     "consola" "^2.15.0"
     "node-fetch" "^2.6.1"
 
+"@redis/bloom@1.2.0":
+  "integrity" "sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg=="
+  "resolved" "https://registry.npmjs.org/@redis/bloom/-/bloom-1.2.0.tgz"
+  "version" "1.2.0"
+
+"@redis/client@^1.0.0", "@redis/client@1.5.7":
+  "integrity" "sha512-gaOBOuJPjK5fGtxSseaKgSvjiZXQCdLlGg9WYQst+/GRUjmXaiB5kVkeQMRtPc7Q2t93XZcJfBMSwzs/XS9UZw=="
+  "resolved" "https://registry.npmjs.org/@redis/client/-/client-1.5.7.tgz"
+  "version" "1.5.7"
+  dependencies:
+    "cluster-key-slot" "1.1.2"
+    "generic-pool" "3.9.0"
+    "yallist" "4.0.0"
+
+"@redis/graph@1.1.0":
+  "integrity" "sha512-16yZWngxyXPd+MJxeSr0dqh2AIOi8j9yXKcKCwVaKDbH3HTuETpDVPcLujhFYVPtYrngSco31BUcSa9TH31Gqg=="
+  "resolved" "https://registry.npmjs.org/@redis/graph/-/graph-1.1.0.tgz"
+  "version" "1.1.0"
+
+"@redis/json@1.0.4":
+  "integrity" "sha512-LUZE2Gdrhg0Rx7AN+cZkb1e6HjoSKaeeW8rYnt89Tly13GBI5eP4CwDVr+MY8BAYfCg4/N15OUrtLoona9uSgw=="
+  "resolved" "https://registry.npmjs.org/@redis/json/-/json-1.0.4.tgz"
+  "version" "1.0.4"
+
+"@redis/search@1.1.2":
+  "integrity" "sha512-/cMfstG/fOh/SsE+4/BQGeuH/JJloeWuH+qJzM8dbxuWvdWibWAOAHHCZTMPhV3xIlH4/cUEIA8OV5QnYpaVoA=="
+  "resolved" "https://registry.npmjs.org/@redis/search/-/search-1.1.2.tgz"
+  "version" "1.1.2"
+
+"@redis/time-series@1.0.4":
+  "integrity" "sha512-ThUIgo2U/g7cCuZavucQTQzA9g9JbDDY2f64u3AbAoz/8vE2lt2U37LamDUVChhaDA3IRT9R6VvJwqnUfTJzng=="
+  "resolved" "https://registry.npmjs.org/@redis/time-series/-/time-series-1.0.4.tgz"
+  "version" "1.0.4"
+
 "@sinclair/typebox@^0.25.16":
   "integrity" "sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ=="
   "resolved" "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.25.24.tgz"
@@ -2130,6 +2164,11 @@
   "resolved" "https://registry.npmjs.org/clone/-/clone-1.0.4.tgz"
   "version" "1.0.4"
 
+"cluster-key-slot@1.1.2":
+  "integrity" "sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA=="
+  "resolved" "https://registry.npmjs.org/cluster-key-slot/-/cluster-key-slot-1.1.2.tgz"
+  "version" "1.1.2"
+
 "co@^4.6.0":
   "integrity" "sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ=="
   "resolved" "https://registry.npmjs.org/co/-/co-4.6.0.tgz"
@@ -2961,6 +3000,11 @@
     "string-width" "^4.2.3"
     "strip-ansi" "^6.0.1"
     "wide-align" "^1.1.2"
+
+"generic-pool@3.9.0":
+  "integrity" "sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g=="
+  "resolved" "https://registry.npmjs.org/generic-pool/-/generic-pool-3.9.0.tgz"
+  "version" "3.9.0"
 
 "gensync@^1.0.0-beta.2":
   "integrity" "sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg=="
@@ -4716,6 +4760,18 @@
   dependencies:
     "resolve" "^1.1.6"
 
+"redis@^3.1.1 || ^4.0.0":
+  "integrity" "sha512-aLs2fuBFV/VJ28oLBqYykfnhGGkFxvx0HdCEBYdJ99FFbSEMZ7c1nVKwR6ZRv+7bb7JnC0mmCzaqu8frgOYhpA=="
+  "resolved" "https://registry.npmjs.org/redis/-/redis-4.6.6.tgz"
+  "version" "4.6.6"
+  dependencies:
+    "@redis/bloom" "1.2.0"
+    "@redis/client" "1.5.7"
+    "@redis/graph" "1.1.0"
+    "@redis/json" "1.0.4"
+    "@redis/search" "1.1.2"
+    "@redis/time-series" "1.0.4"
+
 "reflect-metadata@^0.1.12", "reflect-metadata@^0.1.13":
   "integrity" "sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg=="
   "resolved" "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.13.tgz"
@@ -5677,6 +5733,11 @@
   "version" "3.1.1"
 
 "yallist@^4.0.0":
+  "integrity" "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+  "resolved" "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
+  "version" "4.0.0"
+
+"yallist@4.0.0":
   "integrity" "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
   "resolved" "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
   "version" "4.0.0"

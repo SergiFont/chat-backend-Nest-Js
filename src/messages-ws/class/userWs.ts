@@ -1,5 +1,4 @@
 import { User } from "src/auth/entities/user.entity";
-import { Entity } from "typeorm";
 
 export class UserWs extends User {
 
@@ -7,11 +6,10 @@ export class UserWs extends User {
     public room: string;
     public name: string;
 
-    constructor( wsId: string, room: string) {
+    constructor( wsId: string ) {
         super();
         this.wsId = wsId
-        this.room = room
-        this.name = this.username
+        this.room = 'not yet'
     }
 
 }
