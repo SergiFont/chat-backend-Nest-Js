@@ -4,7 +4,7 @@ import { MessagesWsGateway } from './messages-ws.gateway';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  providers: [MessagesWsGateway, MessagesWsService],
+  providers: [MessagesWsGateway, MessagesWsService, ],
   imports: [AuthModule]
 })
 export class MessagesWsModule {}

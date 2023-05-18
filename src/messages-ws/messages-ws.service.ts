@@ -4,15 +4,17 @@ import { Socket } from 'socket.io';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserWs } from './class/userWs';
+import { UserList } from './class/userList';
 
 @Injectable()
 export class MessagesWsService {
   
-    private connectedClients: ConnectedClients = {}
+    private connectedClients: UserList = new UserList()
 
     constructor(
         @InjectRepository(User)
-        private readonly userRepository: Repository<User>
+        private readonly userRepository: Repository<User>, 
     ) {}
 
     async registerClient( client: Socket, id: string ) {

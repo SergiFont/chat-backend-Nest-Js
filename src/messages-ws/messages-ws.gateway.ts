@@ -22,9 +22,11 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
     const token = client.handshake.headers.authorization
     let payload: JwtPayload
 
+    console.log(client.id);
+
     try {
 
-      payload = this.jwtService.verify(token )
+      payload = this.jwtService.verify( token )
       await this.messagesWsService.registerClient( client, payload.id )
 
     } catch (error) {
