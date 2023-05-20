@@ -1,10 +1,10 @@
 import { Server, Socket } from 'socket.io';
 import { MessagesWsService } from './messages-ws.service';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-// import { NewMessageDto } from './dto/new-message.dto';
 import { MessageFromClient } from './dto/new-message.dto'
 import { JwtPayload } from 'src/auth/interfaces';
 import { JwtService } from '@nestjs/jwt';
+import { ListRequest, LoginWsPayload } from './interfaces';
 
 @WebSocketGateway({ cors: true })
 export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -20,31 +20,31 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
       this.messagesWsService.setServer( server )
     }
 
-
   async handleConnection(client: Socket): Promise<void> {
 
+    console.log('client connected');
     // this.messagesWsService.registerClient( client )
+    // const token = client.handshake.headers.authorization
+    // let payload: JwtPayload
 
-    const token = client.handshake.headers.authorization
-    let payload: JwtPayload
+    // try {
 
-    try {
-
-      payload = this.jwtService.verify( token )
-      await this.messagesWsService.registerClient( client, payload.id )
-      this.messagesWsService.getClient( client.id )
+    //   payload = this.jwtService.verify( token )
+    //   await this.messagesWsService.registerClient( client, payload.id )
+    //   this.messagesWsService.getClient( client.id )
+    //   this.wss.emit( 'active-users', this.messagesWsService.getConnectedClients() )
       
 
-    } catch (error) {
-      console.log({error: error.message});
-      console.log({generalError: error});
-      client.disconnect()
-      return
-    }
+    // } catch (error) {
+    //   console.log({error: error.message});
+    //   console.log({generalError: error});
+    //   client.disconnect()
+    //   return
+    // }
     
     
 
-    this.wss.emit('clients-updated', this.messagesWsService.getConnectedClients() )
+    // this.wss.emit('clients-updated', this.messagesWsService.getConnectedClients() )
 
     // client.emit('message-from-server', {
     //   message: `Welcome ${payload.from}!`
@@ -60,24 +60,37 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
     console.log('client disconnected');
     this.messagesWsService.removeClient( client.id )
     
+    // this.wss.emit( 'active-users', this.messagesWsService.getConnectedClients() )
+
+  }
+
+  @SubscribeMessage('configuring-user')
+  configureUser( client: Socket, payload: LoginWsPayload) {
+
+    try {
+      this.messagesWsService.registerClient( client, payload.id )
+      return 'hello'
+    } catch (error) {
+      console.log(error);
+    }
+    
 
   }
 
   @SubscribeMessage('message-from-client')
   handleMessageFromClient( client: Socket, payload: MessageFromClient): void {
-    // console.log(payload);
-    // client.emit('message-from-server', {
-    //   message: `Welcome ${payload.from}!`
-    // })
 
-    // this.wss.to()  // Sent a message to a specific client ID or ROOM
     this.wss.emit('message-from-server', {
       from: payload.from,
       message: payload.message
     })
-
-    this.wss.in( client.id ).emit
-
     }
 
+  @SubscribeMessage('ask-connected-clients')
+  handleListRequest( client: Socket ) {
+
+    this.wss.in( client.id ).emit( 'deliver-connected-clients', this.messagesWsService.getConnectedClients())
+    console.log(this.messagesWsService.getConnectedClients());
+    console.log('List sent');
+  }
 }

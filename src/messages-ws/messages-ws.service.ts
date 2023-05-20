@@ -32,20 +32,20 @@ export class MessagesWsService {
         const userWs = new UserWs( client.id )
         Object.assign( userWs, user)
 
-        this.connectedClients.add( userWs )  
+        this.connectedClients.add( userWs )
+        console.log(this.getConnectedClients());
     }
     
     removeClient( clientId: string ) {
         this.connectedClients.deleteUser(clientId)
     }
 
-    getConnectedClients(): string[] {
-        return Object.keys( this.connectedClients )
+    getConnectedClients(): UserWs[] {
+        return this.connectedClients.getUsersInRoom()
     }
 
     getClient( wsId: string ) {
         const client = this.connectedClients.getUser( wsId )
-        console.log(client.username);
     }
 
     sendPrivateMessage( id: websocketId, privateMessage: PrivateMessage ): void {
