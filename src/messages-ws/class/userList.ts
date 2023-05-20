@@ -2,9 +2,16 @@ import { UserWs } from "./userWs";
 
 export class UserList {
 
+    // private list: UserWs[] = []
+    static instance
     private list: UserWs[] = []
 
-    constructor() {}
+    constructor() {
+        if (!UserList.instance) {
+            UserList.instance = this
+        }
+        return UserList.instance
+    }
 
     public add( user: UserWs): UserWs {
 

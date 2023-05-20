@@ -2,9 +2,9 @@ import { Server, Socket } from 'socket.io';
 import { MessagesWsService } from './messages-ws.service';
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { MessageFromClient } from './dto/new-message.dto'
-import { JwtPayload } from 'src/auth/interfaces';
 import { JwtService } from '@nestjs/jwt';
-import { ListRequest, LoginWsPayload } from './interfaces';
+import { ListRequest, LoginWsPayload, PrivateMessage } from './interfaces';
+import { websocketId } from './types/websocket-id.type';
 
 @WebSocketGateway({ cors: true })
 export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -23,42 +23,15 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
   async handleConnection(client: Socket): Promise<void> {
 
     console.log('client connected');
-    // this.messagesWsService.registerClient( client )
-    // const token = client.handshake.headers.authorization
-    // let payload: JwtPayload
-
-    // try {
-
-    //   payload = this.jwtService.verify( token )
-    //   await this.messagesWsService.registerClient( client, payload.id )
-    //   this.messagesWsService.getClient( client.id )
-    //   this.wss.emit( 'active-users', this.messagesWsService.getConnectedClients() )
-      
-
-    // } catch (error) {
-    //   console.log({error: error.message});
-    //   console.log({generalError: error});
-    //   client.disconnect()
-    //   return
-    // }
+    console.log(client.id);
     
-    
-
-    // this.wss.emit('clients-updated', this.messagesWsService.getConnectedClients() )
-
-    // client.emit('message-from-server', {
-    //   message: `Welcome ${payload.from}!`
-    // })
-
-    // client.broadcast.emit('message-from-server', {
-    //   message: `${payload.from} has connected to the room`
-    // })
 
   }
   
   handleDisconnect(client: Socket): void {
     console.log('client disconnected');
     this.messagesWsService.removeClient( client.id )
+    client.removeAllListeners()
     
     // this.wss.emit( 'active-users', this.messagesWsService.getConnectedClients() )
 
@@ -68,6 +41,7 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
   configureUser( client: Socket, payload: LoginWsPayload) {
 
     try {
+      // this.messagesWsService.removeClient( client.id )
       this.messagesWsService.registerClient( client, payload.id )
       return 'hello'
     } catch (error) {
@@ -80,6 +54,7 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
   @SubscribeMessage('message-from-client')
   handleMessageFromClient( client: Socket, payload: MessageFromClient): void {
 
+    console.log(payload);
     this.wss.emit('message-from-server', {
       from: payload.from,
       message: payload.message
@@ -93,4 +68,17 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
     console.log(this.messagesWsService.getConnectedClients());
     console.log('List sent');
   }
+
+  sendPrivateMessage( id: websocketId, privateMessage: PrivateMessage ) {
+    const { body, from } = privateMessage
+    const payload = {
+        from,
+        body
+    }
+    // console.log(privateMessage);
+    // console.log(payload);
+    // console.log(payload);
+
+    this.wss.in( id ).emit( 'private-message', payload )
+}
 }

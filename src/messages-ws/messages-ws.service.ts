@@ -5,8 +5,6 @@ import { User } from 'src/auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserWs } from './class/userWs';
 import { UserList } from './class/userList';
-import { PrivateMessage } from './interfaces';
-import { websocketId } from './types/websocket-id.type';
 
 @Injectable()
 export class MessagesWsService {
@@ -26,37 +24,58 @@ export class MessagesWsService {
 
     
     async registerClient( client: Socket, id: string ) {
-        const user = await this.userRepository.findOneBy({ id })
-        if ( !user ) throw new UnauthorizedException('User not found')
-        if ( !user.isactive ) throw new UnauthorizedException('User not active')
-        const userWs = new UserWs( client.id )
-        Object.assign( userWs, user)
 
-        this.connectedClients.add( userWs )
-        console.log(this.getConnectedClients());
+        try {
+            const user = await this.userRepository.findOneBy({ id })
+            if ( !user ) throw new UnauthorizedException('User not found')
+            if ( !user.isactive ) throw new UnauthorizedException('User not active')
+            const userWs = new UserWs( client.id )
+            Object.assign( userWs, user)
+    
+            this.connectedClients.add( userWs )
+            console.log(this.getConnectedClients());
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
     
     removeClient( clientId: string ) {
-        this.connectedClients.deleteUser(clientId)
+        try {
+            this.connectedClients.deleteUser(clientId)
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getConnectedClients(): UserWs[] {
-        return this.connectedClients.getUsersInRoom()
+        try {
+            return this.connectedClients.getUsersInRoom()
+            
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getClient( wsId: string ) {
         const client = this.connectedClients.getUser( wsId )
     }
 
-    sendPrivateMessage( id: websocketId, privateMessage: PrivateMessage ): void {
-        const { body, from } = privateMessage
-        const payload = {
-            from,
-            body
-        }
-
-        this.wss.in( id ).emit( 'private-message', payload )
-    }
+    // sendPrivateMessage( id: websocketId, privateMessage: PrivateMessage ): void {
+    //     try {
+    //         const { body, from } = privateMessage
+    //         const payload = {
+    //             from,
+    //             body
+    //         }
+    
+    //         this.wss.in( id ).emit( 'private-message', payload )
+            
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
     
     // private checkUserConnection( user: User ) {
         
