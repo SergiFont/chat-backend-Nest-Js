@@ -9,6 +9,7 @@ import { LoginUserDto, UpdateUserDto, CreateUserDto } from './dto';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
 import { isUUID } from 'class-validator';
 import { RequestsResponse, LoginResponse, JwtPayload, ListResponse, CheckAuthResponse } from './interfaces';
+import { PaginationDto } from 'src/rooms/dto/pagination.dto';
 
 @Injectable()
 export class AuthService {
@@ -82,30 +83,23 @@ export class AuthService {
   
   async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
     const {token} = this.checkAuthStatus(user)
-    let userData: User
+    let usersData: User[]
     
-    if(isUUID(term)) userData = await this.userRepository.findOne({
-      where: { id: term },
-    })
+    if(isUUID(term)) usersData = await this.userRepository.findBy({ id: term })
     else {
-      userData = await this.userRepository.findOne({
-        where: {username: term},
-        select: {email: true, username: true}
-        
-      })
-      // const queryBuilder = this.userRepository.createQueryBuilder('user')
-      // user = await queryBuilder
-      //   .select()
-      //   .where('UPPER(username) =:username', {
-      //     username: term.toUpperCase(),
-      //   })
-      //   .getOne()
+      const queryBuilder = this.userRepository.createQueryBuilder('user')
+      usersData = await queryBuilder
+        .select()
+        .where('UPPER(username) LIKE :username', {
+          username: `%${term.toUpperCase()}%`,
+        })
+        .getMany()
     }
     
-    if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
+    if (!usersData) throw new NotFoundException(`User with term "${term}" not found`)
     
     return {
-      user: [userData],
+      user: usersData,
       token
     }
   }
@@ -166,11 +160,20 @@ export class AuthService {
     }
     
   }
-  async list(user: User): Promise<ListResponse> {
+  async list(user: User, paginationDto: PaginationDto): Promise<ListResponse> {
+
+    const { limit = 10, offset = 0 } = paginationDto
+
     const {token} = this.checkAuthStatus(user)
     const usersData = await this.userRepository.find({
-      select: { email: true, username: true}
+      select: { email: true, username: true},
+      take: limit,
+      skip: offset
     })
     return {user: usersData, token}
+  }
+
+  getNumberUsers() {
+    return this.userRepository.count()
   }
 }

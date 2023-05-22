@@ -20,7 +20,7 @@ import { Room } from './entities/room.entity';
 @ApiTags('Rooms')
 @Controller('rooms')
 export class RoomsController {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(private readonly roomsService: RoomsService) { }
 
   @Post()
   @Auth()
@@ -29,8 +29,14 @@ export class RoomsController {
   @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
   create(
     @Body() createRoomDto: CreateRoomDto
-    ) {
+  ) {
     return this.roomsService.create(createRoomDto);
+  }
+
+  @Get('total')
+  @Auth()
+  getTotalRooms() {
+    return this.roomsService.getNumberRooms()
   }
 
   @Get()
@@ -47,8 +53,8 @@ export class RoomsController {
   @ApiResponse({ status: 201, description: 'Showing room if exist', type: Room })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  findOne(@Param('term') term: string) {
-    return this.roomsService.findOne(term);
+  findBy(@Param('term') term: string) {
+    return this.roomsService.findBy(term);
   }
 
   @Patch(':id')
@@ -71,4 +77,5 @@ export class RoomsController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.roomsService.remove(id);
   }
+
 }

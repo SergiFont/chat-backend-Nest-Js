@@ -44,6 +44,25 @@ export class RoomsService {
     });
   }
 
+  async findBy(term: string): Promise<Room[]> {
+    let rooms: Room[];
+
+    if (isUUID(term)) rooms = await this.roomRepository.findBy({ id: term });
+    else {
+      const queryBuilder = this.roomRepository.createQueryBuilder();
+      rooms = await queryBuilder
+        .where('UPPER(name) LIKE :name or slug LIKE :slug', {
+          name: `%${term.toUpperCase()}%`,
+          slug: `%${term.toLowerCase()}%`,
+        })
+        .getMany();
+    }
+
+    if (!rooms)
+      throw new NotFoundException(`Room with term "${term}" not found`);
+    return rooms;
+  }
+
   async findOne(term: string): Promise<Room[]> {
     let room: Room;
 
@@ -56,8 +75,7 @@ export class RoomsService {
           slug: term.toLowerCase(),
         })
         .getOne();
-    } // pasa a mayusculas el titulo buscado, y a mayusculas todos los titulos de la base de datos en los que busca.
-    // de esta manera, da igual la combinacion de mayusculas o minusculas que nos pasen por query, siempre lo va a encontrar.
+    }
 
     if (!room)
       throw new NotFoundException(`Room with term "${term}" not found`);
@@ -94,5 +112,9 @@ export class RoomsService {
     } catch (error) {
       this.exceptionHandlerService.handleDbExceptions(error);
     }
+  }
+
+  getNumberRooms() {
+    return this.roomRepository.count() 
   }
 }
