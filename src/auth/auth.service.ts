@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from './entities/user.entity';
-import { LoginUserDto, UpdateUserDto, CreateUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto, CreateUserDto, CreateAdminDto } from './dto';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
 import { isUUID } from 'class-validator';
 import { RequestsResponse, LoginResponse, JwtPayload, ListResponse, CheckAuthResponse } from './interfaces';
@@ -34,7 +34,7 @@ export class AuthService {
       })
 
       const newUser = await this.userRepository.save( user )
-      delete user.password
+      delete newUser.password
 
       return {
         ...newUser,
@@ -43,6 +43,14 @@ export class AuthService {
     } catch (error) {
       this.exceptionHandlerService.handleDbExceptions(error)
     }
+  }
+
+  async createAdmin( createAdminDto: CreateAdminDto ): Promise<void> {
+    const { password, username, email } = createAdminDto
+    const standardEmail = email.toLowerCase()
+
+    const admin = this.userRepository.create({username, password: bcrypt.hashSync(password, 10), roles: ['admin'], email: standardEmail})
+    await this.userRepository.save( admin )
   }
 
   

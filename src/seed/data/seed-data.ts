@@ -1,12 +1,6 @@
-interface SeedRoom {
-  name: string;
-  description: string;
-  slug: string;
-}
+import { SeedRooms, SeedUser, SeedUsers } from "../interfaces";
 
-interface SeedRooms {
-  rooms: SeedRoom[];
-}
+
 
 export const initialRooms: SeedRooms = {
   rooms: [
@@ -113,21 +107,6 @@ export const initialRooms: SeedRooms = {
   ],
 };
 
-interface SeedUser {
-  email: string;
-  password: string;
-  username: string;
-  isActive: boolean;
-}
-
-interface SeedUsers {
-  users: SeedUser[];
-}
-
-// export const initialUsers: SeedUsers = {
-//   users: []
-// };
-
 export const initialUsers: SeedUsers = {
   users: []
 }
@@ -136,7 +115,7 @@ export const initialUsers: SeedUsers = {
 for (let i = 0; i < 10; i++) {
   const user: SeedUser = {
     email: `user${i}@example.com`,
-    password: "MyPassword123",
+    password: "MyPassword12345",
     username: `User-${i}`,
     isActive: true
   };
