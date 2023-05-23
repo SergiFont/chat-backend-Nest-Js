@@ -1,6 +1,6 @@
-export { CheckAuthResponse } from './check-auth-response';
-export { ListResponse } from './list-response';
-export { LoginResponse } from './login-response';
-export { RequestsResponse } from './requests-response';
-export { ValidRoles } from './valid-roles'
+export { CheckAuthResponse } from './check-auth-response.interface';
+export { ListResponse } from './list-response.interface';
+export { LoginResponse } from './login-response.interface';
+export { RequestsResponse } from './requests-response.interface';
+export { ValidRoles } from './valid-roles.interface'
 export { JwtPayload } from './jwt-payload.interface'
