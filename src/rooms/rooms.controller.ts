@@ -12,9 +12,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoomsService } from './rooms.service';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
-import { PaginationDto } from './dto/pagination.dto';
+import { CreateRoomDto, UpdateRoomDto, PaginationDto } from './dto';
 import { Auth } from 'src/auth/decorators';
 import { Room } from './entities/room.entity';
 @ApiTags('Rooms')
