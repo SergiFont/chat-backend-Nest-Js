@@ -1,5 +1,7 @@
 // import { IsOptional, IsString, MinLength } from "class-validator";
 
+import { ApiProperty } from "@nestjs/swagger";
+
 // export class NewMessageDto {
 
 //     @IsString()
@@ -12,8 +14,15 @@
 
 // }
 
-export interface MessageFromClient {
+export class MessageFromClient {
+
+    @ApiProperty()
     from: string;
+
+    @ApiProperty()
     message: string;
+
+    @ApiProperty()
     Authorization: string;
+    
   }

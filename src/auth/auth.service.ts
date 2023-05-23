@@ -34,7 +34,6 @@ export class AuthService {
       })
 
       const newUser = await this.userRepository.save( user )
-      delete newUser.password
 
       return {
         ...newUser,

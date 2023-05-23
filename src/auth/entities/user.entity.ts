@@ -39,6 +39,7 @@ export class User {
   })
   roles: string[];
 
+  @ApiProperty()
   @ManyToMany(() => Room)
     @JoinTable()
     rooms?: Room[]

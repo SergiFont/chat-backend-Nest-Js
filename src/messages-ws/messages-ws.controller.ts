@@ -4,7 +4,8 @@ import { PrivateMessage } from './interfaces';
 import { websocketId } from './types/websocket-id.type';
 import { Auth } from 'src/auth/decorators';
 import { MessagesWsGateway } from './messages-ws.gateway';
-
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+@ApiTags('Websocket')
 @Controller()
 export class MessagesWsController {
 
@@ -15,6 +16,7 @@ export class MessagesWsController {
 
     @Post('messages/:id')
     @Auth()
+    @ApiResponse({status: 200 })
     sendMessage( @Param('id') id: websocketId, @Body() privateMessage: PrivateMessage ){
 
         // console.log(id);
