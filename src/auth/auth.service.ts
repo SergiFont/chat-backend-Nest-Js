@@ -81,7 +81,7 @@ export class AuthService {
   }
   
   
-  async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
+  async findBy(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
     const {token} = this.checkAuthStatus(user)
     let usersData: User[]
     
