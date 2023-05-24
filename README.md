@@ -24,20 +24,62 @@
 
 # Chat
 
-1. Clone project
-2. ```yarn install```
-3. Copy file ```.env.template``` rename it to ```.env```
-4. Change all the environment variables
-5. Run the database
+# Pre setup:
+1. Use postman (opcional) to test the RESTFUL API endpoints: https://www.postman.com/
+2. Docker desktop: https://www.docker.com/products/docker-desktop/
+ 
+- If you don't have the docker image for postgres, you need to download it in order to build the database:
+- Execute command: 
+```
+docker pull postgres:14.3
+```
+
+
+1. Clone project or download the zip.
+2. Execute the command npm install on the project root directory.
+```
+npm install
+``` 
+
+3. Copy file ```.env.template``` and rename the copy to ```.env```.
+- Change the environment variables inside ```.env``` adapting values to adjust your own.
+5. Run the database executing on the root project:
 ```
 docker-compose up -d
 ```
-6. Run the server develop mode: ```yarn start:dev```
+6. Run the server: 
+- Develop mode: 
+```
+npm start:dev
+```
+- Production: 
+```
+npm start:prod
+```
 
-7. Ejecutar seed
+7. Execute seed (opctional) this will allow you to fill the DB with preset data.
 ```
 http://localhost:3000/api/seed
 ```
 
 
 Documentation url: http://localhost:3000/api
+
+Postman:
+- In order to trye the endpoints in postman, you will need to use the collection facilitated in this repository. Also, many of the endpoints require a Bearer token to be facilitated.
+
+External libraries:
+- bcrypt:             
+https://www.npmjs.com/package/bcrypt
+- passport:           
+https://www.npmjs.com/package/passport
+- class-transformer:  
+https://www.npmjs.com/package/class-transformer (not really needed on the project, just for educational purposes)
+- class-validator:    
+https://www.npmjs.com/package/class-validator
+- socket-io:          
+https://www.npmjs.com/package/socket.io
+- typeorm:            
+https://www.npmjs.com/package/typeorm
+- uuid:               
+https://www.npmjs.com/package/uuid
