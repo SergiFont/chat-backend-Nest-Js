@@ -24,7 +24,7 @@
 
 # Chat
 
-# Pre setup:
+## Pre setup:
 1. Use postman (opcional) to test the RESTFUL API endpoints: https://www.postman.com/
 2. Docker desktop: https://www.docker.com/products/docker-desktop/
  
@@ -34,7 +34,7 @@
 docker pull postgres:14.3
 ```
 
-# Run the app
+## Run the app
 
 1. Clone project or download the zip.
 2. Execute the command npm install on the project root directory.
@@ -63,13 +63,14 @@ npm start:prod
 http://localhost:3000/api/seed
 ```
 
+## API Documentation and postman
 
 Documentation url: http://localhost:3000/api
 
 Postman:
 - In order to trye the endpoints in postman, you will need to use the collection facilitated in this repository. Also, many of the endpoints require a Bearer token to be facilitated.
 
-External libraries:
+## External libraries:
 - bcrypt:             
 https://www.npmjs.com/package/bcrypt
 - passport:           
