@@ -34,6 +34,7 @@
 docker pull postgres:14.3
 ```
 
+# Run the app
 
 1. Clone project or download the zip.
 2. Execute the command npm install on the project root directory.
@@ -43,11 +44,11 @@ npm install
 
 3. Copy file ```.env.template``` and rename the copy to ```.env```.
 - Change the environment variables inside ```.env``` adapting values to adjust your own.
-5. Run the database executing on the root project:
+4. Run the database executing on the root project:
 ```
 docker-compose up -d
 ```
-6. Run the server: 
+5. Run the server: 
 - Develop mode: 
 ```
 npm start:dev
@@ -57,7 +58,7 @@ npm start:dev
 npm start:prod
 ```
 
-7. Execute seed (opctional) this will allow you to fill the DB with preset data.
+6. Execute seed (opctional) this will allow you to fill the DB with preset data.
 ```
 http://localhost:3000/api/seed
 ```
