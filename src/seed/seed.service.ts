@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SeedAdmin, SeedUser } from './interfaces';
+import { ConfigService } from '@nestjs/config';
 // import { InjectRepository } from '@nestjs/typeorm';
 // import { User } from 'src/auth/entities/user.entity';
 // import { Repository } from 'typeorm';
@@ -17,6 +18,7 @@ export class SeedService {
     private readonly roomsService: RoomsService,
     @InjectRepository( User )
     private readonly userRepository: Repository<User>,
+    private readonly configService: ConfigService
   ) {}
 
   async runSeed(): Promise<string> {
@@ -56,9 +58,10 @@ export class SeedService {
       insertPromises.push(this.authService.create(user));
     });
 
+    const adminPass = this.configService.get('ADMIN_PASS')
     const admin : SeedAdmin = {
       email: 'admin@mail.com',
-      password: 'Superadmin1',
+      password: adminPass,
       username: 'admin',
       isActive: true,
       roles: ['admin']

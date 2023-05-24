@@ -13,7 +13,6 @@ export class MessagesWsGateway implements OnGatewayConnection, OnGatewayDisconne
 
   constructor(
     private readonly messagesWsService: MessagesWsService,
-    private readonly jwtService: JwtService
     ) {}
 
     afterInit( server: Server): void {
