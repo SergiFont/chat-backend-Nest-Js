@@ -12,49 +12,61 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { RoomsService } from './rooms.service';
-import { CreateRoomDto } from './dto/create-room.dto';
-import { UpdateRoomDto } from './dto/update-room.dto';
-import { PaginationDto } from './dto/pagination.dto';
+import { CreateRoomDto, UpdateRoomDto, PaginationDto } from './dto';
 import { Auth } from 'src/auth/decorators';
 import { Room } from './entities/room.entity';
 @ApiTags('Rooms')
 @Controller('rooms')
 export class RoomsController {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(private readonly roomsService: RoomsService) { }
 
   @Post()
   @Auth()
   @ApiResponse({ status: 201, description: 'Room was created', type: Room })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not a valid role' })
   create(
     @Body() createRoomDto: CreateRoomDto
-    ) {
+  ) {
     return this.roomsService.create(createRoomDto);
+  }
+
+  @Get('total')
+  @Auth()
+  @ApiResponse({ status: 200, description: 'Return number of rooms', type: Number })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
+  getTotalRooms() {
+    return this.roomsService.getNumberRooms()
   }
 
   @Get()
   @Auth()
-  @ApiResponse({ status: 201, description: 'Show list of rooms', type: [Room] })
+  @ApiResponse({ status: 200, description: 'Show list of rooms', type: [Room] })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.roomsService.findAll(paginationDto);
   }
 
   @Get(':term')
   @Auth()
-  @ApiResponse({ status: 201, description: 'Showing room if exist', type: Room })
+  @ApiResponse({ status: 200, description: 'Showing room if exist', type: Room })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
-  findOne(@Param('term') term: string) {
-    return this.roomsService.findOne(term);
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
+  findBy(@Param('term') term: string) {
+    return this.roomsService.findBy(term);
   }
 
   @Patch(':id')
   @Auth()
   @ApiResponse({ status: 201, description: 'Update room if exist', type: Room })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
   @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -65,10 +77,12 @@ export class RoomsController {
 
   @Delete(':id')
   @Auth()
-  @ApiResponse({ status: 201, description: 'Delete room if exist', type: Room })
+  @ApiResponse({ status: 200, description: 'Delete room if exist' })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  @ApiResponse({ status: 403, description: 'Forbidden. Token related' })
+  @ApiResponse({ status: 401, description: 'Unauthorized. Token not valid' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.roomsService.remove(id);
   }
+
 }

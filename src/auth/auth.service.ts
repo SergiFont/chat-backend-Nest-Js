@@ -5,10 +5,11 @@ import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 
 import { User } from './entities/user.entity';
-import { LoginUserDto, UpdateUserDto, CreateUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto, CreateUserDto, CreateAdminDto } from './dto';
 import { ExceptionHandlerService } from 'src/exception-handler/exception-handler.service';
 import { isUUID } from 'class-validator';
 import { RequestsResponse, LoginResponse, JwtPayload, ListResponse, CheckAuthResponse } from './interfaces';
+import { PaginationDto } from 'src/rooms/dto/pagination.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +34,6 @@ export class AuthService {
       })
 
       const newUser = await this.userRepository.save( user )
-      delete user.password
 
       return {
         ...newUser,
@@ -42,6 +42,14 @@ export class AuthService {
     } catch (error) {
       this.exceptionHandlerService.handleDbExceptions(error)
     }
+  }
+
+  async createAdmin( createAdminDto: CreateAdminDto ): Promise<void> {
+    const { password, username, email } = createAdminDto
+    const standardEmail = email.toLowerCase()
+
+    const admin = this.userRepository.create({username, password: bcrypt.hashSync(password, 10), roles: ['admin'], email: standardEmail})
+    await this.userRepository.save( admin )
   }
 
   
@@ -66,8 +74,8 @@ export class AuthService {
       select: { email: true, password: true, id: true, username: true, isactive: true, roles: true }
     })
 
-    if ( !user )
-    throw new UnauthorizedException('Credentials are not valid (email)')
+    if ( !user ) throw new UnauthorizedException('Credentials are not valid (email)')
+    if ( !user.isactive ) throw new UnauthorizedException('User not active')
 
     if (!bcrypt.compareSync( password, user.password ) ) throw new UnauthorizedException('Credentials are not valid (password)')
 
@@ -80,32 +88,25 @@ export class AuthService {
   }
   
   
-  async findOne(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
+  async findBy(term: string, user: User): Promise<RequestsResponse> { // se puede buscar por ID o username
     const {token} = this.checkAuthStatus(user)
-    let userData: User
+    let usersData: User[]
     
-    if(isUUID(term)) userData = await this.userRepository.findOne({
-      where: { id: term },
-    })
+    if(isUUID(term)) usersData = await this.userRepository.findBy({ id: term })
     else {
-      userData = await this.userRepository.findOne({
-        where: {username: term},
-        select: {email: true, username: true}
-        
-      })
-      // const queryBuilder = this.userRepository.createQueryBuilder('user')
-      // user = await queryBuilder
-      //   .select()
-      //   .where('UPPER(username) =:username', {
-      //     username: term.toUpperCase(),
-      //   })
-      //   .getOne()
+      const queryBuilder = this.userRepository.createQueryBuilder('user')
+      usersData = await queryBuilder
+        .select()
+        .where('UPPER(username) LIKE :username', {
+          username: `%${term.toUpperCase()}%`,
+        })
+        .getMany()
     }
     
-    if (!userData) throw new NotFoundException(`User with term "${term}" not found`)
+    if (!usersData) throw new NotFoundException(`User with term "${term}" not found`)
     
     return {
-      user: [userData],
+      user: usersData,
       token
     }
   }
@@ -166,11 +167,20 @@ export class AuthService {
     }
     
   }
-  async list(user: User): Promise<ListResponse> {
+  async list(user: User, paginationDto: PaginationDto): Promise<ListResponse> {
+
+    const { limit = 10, offset = 0 } = paginationDto
+
     const {token} = this.checkAuthStatus(user)
     const usersData = await this.userRepository.find({
-      select: { email: true, username: true}
+      select: { email: true, username: true},
+      take: limit,
+      skip: offset
     })
     return {user: usersData, token}
+  }
+
+  getNumberUsers() {
+    return this.userRepository.count()
   }
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Room } from 'src/rooms/entities/room.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -39,6 +39,7 @@ export class User {
   })
   roles: string[];
 
+  @ApiProperty()
   @ManyToMany(() => Room)
     @JoinTable()
     rooms?: Room[]

@@ -15,7 +15,7 @@ import { Response } from 'express';
 
 import { FilesService } from './files.service';
 import { fileFilter, fileNamer } from './helpers';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Files')
 @Controller('files')
@@ -25,7 +25,11 @@ export class FilesController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Get('user/:imageName')
+  @Get('userImage/:imageName')
+  @ApiResponse({ status: 200, description: 'Returns an image' })
+  @ApiResponse({ status: 400, description: 'Bad request, no file was found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
   findProductImage(
     @Res() res: Response, // este decorador rompe la cadena de funcionamiento interna de Node. Es decir, se salta los interceptores globales y las restricciones por defecto de nest, entre otros. Usar con precaución
     // tomo el control yo de la respuesta, y dicto como quiero que se emita
@@ -38,7 +42,11 @@ export class FilesController {
     res.sendFile(path);
   }
 
-  @Post('user')
+  @Post('upload-image')
+  @ApiResponse({ status: 201, description: 'Uploads an image' })
+  @ApiResponse({ status: 400, description: 'Bad request, no image or valid image is send' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Not valid role' })
   @UseInterceptors(
     FileInterceptor('image', {
       fileFilter,
@@ -49,18 +57,6 @@ export class FilesController {
     }),
   )
   async uploadUserImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException(
-        'Make sure that you are passing an image file',
-      );
-    }
-
-    const secureUrl = `${this.configService.get('HOST_API')}/files/userImages/${
-      file.filename
-    }`;
-
-    return {
-      secureUrl,
-    };
+    return this.filesService.uploadStaticFile(file)
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, applyDecorators } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthService } from './auth.service';
@@ -36,8 +36,8 @@ import { PassportModule } from '@nestjs/passport';
     JwtStrategy, 
     PassportModule, 
     JwtModule, 
-    // AuthModule,
     AuthService
   ],
+  
 })
 export class AuthModule {}

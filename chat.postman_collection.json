@@ -9,10 +9,20 @@
 		{
 			"name": "roomList",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUxYTUzZjZlLWVkYzMtNGZhYi1hZDAwLWQ2MDgwZWFhNmZhOSIsImlhdCI6MTY4NDcxODY3NSwiZXhwIjoxNjg0NzI1ODc1fQ.isEWppRykphLCkfarcpP2TVyyS6O8RFP93nck65obik",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/rooms",
+					"raw": "localhost:3000/api/rooms?limit=10&offset=20",
 					"host": [
 						"localhost"
 					],
@@ -20,6 +30,16 @@
 					"path": [
 						"api",
 						"rooms"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "offset",
+							"value": "20"
+						}
 					]
 				}
 			},
@@ -28,8 +48,28 @@
 		{
 			"name": "newRoom",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUxYTUzZjZlLWVkYzMtNGZhYi1hZDAwLWQ2MDgwZWFhNmZhOSIsImlhdCI6MTY4NDcxODY3NSwiZXhwIjoxNjg0NzI1ODc1fQ.isEWppRykphLCkfarcpP2TVyyS6O8RFP93nck65obik",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Room of Glory",
+							"type": "text"
+						}
+					]
+				},
 				"url": {
 					"raw": "localhost:3000/api/rooms",
 					"host": [
@@ -136,10 +176,20 @@
 		{
 			"name": "loadImage",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
 				"url": {
-					"raw": "localhost:3000/api/files/user/eb099cbe-10e7-4a3f-842b-d397cf100960.jpeg",
+					"raw": "localhost:3000/api/files/upload-image",
 					"host": [
 						"localhost"
 					],
@@ -147,8 +197,7 @@
 					"path": [
 						"api",
 						"files",
-						"user",
-						"eb099cbe-10e7-4a3f-842b-d397cf100960.jpeg"
+						"upload-image"
 					]
 				}
 			},
@@ -161,7 +210,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"Mail22@mail.com\",\r\n    \"password\": \"123456As\",\r\n    \"fullName\": \"Juan Garcias2\"\r\n}",
+					"raw": "{\r\n    \"email\": \"Mail22@mail.com\",\r\n    \"password\": \"123456As\",\r\n    \"username\": \"JuanGarcias2\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -190,7 +239,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"user0@example.com\",\r\n    \"password\": \"MyPassword123\"\r\n}",
+					"raw": "{\r\n    \"email\": \"admin@mail.com\",\r\n    \"password\": \"Superadmin1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -313,6 +362,110 @@
 						"api",
 						"auth",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "private-message",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUxYTUzZjZlLWVkYzMtNGZhYi1hZDAwLWQ2MDgwZWFhNmZhOSIsImlhdCI6MTY4NDcwNTA1NSwiZXhwIjoxNjg0NzEyMjU1fQ.UR0tQbiHHtdxbTQdQQUVHt9qeFnppSdfsKfxXmdH568",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "body",
+							"value": "So uncivilized",
+							"type": "text"
+						},
+						{
+							"key": "from",
+							"value": "Kenobi",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/messages/mxPY0NdNt885xfpJAABb",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"messages",
+						"mxPY0NdNt885xfpJAABb"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "client list",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUxYTUzZjZlLWVkYzMtNGZhYi1hZDAwLWQ2MDgwZWFhNmZhOSIsImlhdCI6MTY4NDQ4NjA5MCwiZXhwIjoxNjg0NDkzMjkwfQ.LC4KKClSnD0OS6qVvRAYKony_X3iAMqYnt93HoVuoqU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "uploadImage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/files/userImage/b4b3a2be-b4e9-4168-9b65-5a1f1d0810b5.jpeg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"files",
+						"userImage",
+						"b4b3a2be-b4e9-4168-9b65-5a1f1d0810b5.jpeg"
 					]
 				}
 			},
